@@ -8,11 +8,12 @@ class AdvancedNoiseNormalizer:
     def __init__(self):
         # Pass 1: 명확한 단일 변환 (순서 중요!)
         self.char_map = {
-            'O': '0', 'o': '0',
+            'O': '0', 'o': '0', 'D': '0',
             'l': '1', 'I': '1', '|': '1',
             'B': '8',
-            'S': '5',
+            'S': '5', 's': '5',
             'Z': '2',
+            'g': '9', 'q': '9'
         }
         
         # Pass 2: 복합 패턴

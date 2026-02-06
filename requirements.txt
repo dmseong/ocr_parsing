@@ -6,12 +6,9 @@ pandas>=2.0.0
 # OCR Parsing & Text Processing
 rapidfuzz>=3.0.0
 
-# spaCy (Optional - for hybrid parsing)
-# spacy>=3.0.0
-# 한국어 모델 설치: python -m spacy download ko_core_news_sm
+# spaCy (Used for hybrid parsing / Issuer extraction)
+spacy>=3.0.0
+# Note: Requires Korean model. Run: python -m spacy download ko_core_news_sm
 
-# Optional: Image processing (if needed for future features)
-# pillow>=10.0.0
-
-# Development (optional)
+# Development & Testing
 # pytest>=7.0.0

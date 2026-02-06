@@ -17,9 +17,7 @@
     },
     "address": null,
     "_confidence": 100.0,
-    "_methods": {
-      "weight": "hybrid"
-    },
+    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 80.0,
@@ -55,9 +53,7 @@
     },
     "address": null,
     "_confidence": 100.0,
-    "_methods": {
-      "weight": "hybrid"
-    },
+    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 100.0,
@@ -79,7 +75,7 @@
     "net_weight": 130,
     "date": "2026-02-01",
     "vehicle_num": "5405",
-    "company": null,
+    "company": "공육을 unle 정우리사이클링(주)",
     "issuer": "정우리사이클링 (주)",
     "phone": "031-354-7778",
     "product": null,
@@ -88,21 +84,18 @@
     "gps": null,
     "address": "경기도 화성시 팔탄면 노하길454번길 23",
     "_confidence": 100.0,
-    "_methods": {
-      "weight": "hybrid"
-    },
+    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 80.0,
       "total_weight": 100.0,
       "tare_weight": 100.0,
       "net_weight": 100.0,
-      "company": 0.0
+      "company": 100.0
     },
-    "_overall_confidence": 90.62,
+    "_overall_confidence": 96.88,
     "_issues": [
-      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)",
-      "회사명: 회사명 없음"
+      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)"
     ],
     "_review_priority": "NONE",
     "_needs_review": false,
@@ -124,9 +117,7 @@
     "gps": null,
     "address": "경기도 화성시 팔탄면 포승향남로 2960-19",
     "_confidence": 100.0,
-    "_methods": {
-      "weight": "hybrid"
-    },
+    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 80.0,
@@ -253,14 +244,12 @@
     "issuer": "Supplier : Global Resources Inc.",
     "phone": null,
     "product": null,
-    "ticket_id": "A8-1234",
+    "ticket_id": null,
     "type": null,
     "gps": null,
     "address": null,
     "_confidence": 100.0,
-    "_methods": {
-      "weight": "hybrid"
-    },
+    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 60.0,
@@ -294,9 +283,7 @@
     "gps": null,
     "address": null,
     "_confidence": 90.0,
-    "_methods": {
-      "weight": "hybrid"
-    },
+    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 100.0,
@@ -329,9 +316,7 @@
     "gps": null,
     "address": null,
     "_confidence": 80.0,
-    "_methods": {
-      "weight": "hybrid"
-    },
+    "_methods": {},
     "_field_confidences": {
       "date": 0.0,
       "vehicle_num": 80.0,
