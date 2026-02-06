@@ -1,0 +1,353 @@
+[
+  {
+    "total_weight": 12480,
+    "tare_weight": 7470,
+    "net_weight": 5010,
+    "date": "2026-02-02",
+    "vehicle_num": "8713",
+    "company": "곰욕환경폐기물",
+    "issuer": "동우바이오(주)",
+    "phone": null,
+    "product": null,
+    "ticket_id": "0016",
+    "type": null,
+    "gps": {
+      "latitude": 37.105317,
+      "longitude": 127.375673
+    },
+    "address": null,
+    "_confidence": 100.0,
+    "_methods": {
+      "weight": "hybrid"
+    },
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 80.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 96.88,
+    "_issues": [
+      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)"
+    ],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_01"
+  },
+  {
+    "total_weight": 13460,
+    "tare_weight": 7560,
+    "net_weight": 5900,
+    "date": "2026-02-02",
+    "vehicle_num": "80구8713",
+    "company": "고요환경",
+    "issuer": "장원C&S",
+    "phone": null,
+    "product": "식물",
+    "ticket_id": "010889",
+    "type": "입고",
+    "gps": {
+      "latitude": 37.718114,
+      "longitude": 126.84494
+    },
+    "address": null,
+    "_confidence": 100.0,
+    "_methods": {
+      "weight": "hybrid"
+    },
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 100.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 100.0,
+    "_issues": [],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_02"
+  },
+  {
+    "total_weight": 14080,
+    "tare_weight": 13950,
+    "net_weight": 130,
+    "date": "2026-02-01",
+    "vehicle_num": "5405",
+    "company": null,
+    "issuer": "정우리사이클링 (주)",
+    "phone": "031-354-7778",
+    "product": null,
+    "ticket_id": "5",
+    "type": "입고",
+    "gps": null,
+    "address": "경기도 화성시 팔탄면 노하길454번길 23",
+    "_confidence": 100.0,
+    "_methods": {
+      "weight": "hybrid"
+    },
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 80.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 0.0
+    },
+    "_overall_confidence": 90.62,
+    "_issues": [
+      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)",
+      "회사명: 회사명 없음"
+    ],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_03"
+  },
+  {
+    "total_weight": 14230,
+    "tare_weight": 12910,
+    "net_weight": 1320,
+    "date": "2025-12-01",
+    "vehicle_num": "0580",
+    "company": "신성(푸디스트)",
+    "issuer": "(주) 하은펄프",
+    "phone": "(031)359-9127",
+    "product": "국판",
+    "ticket_id": "0022",
+    "type": "입고",
+    "gps": null,
+    "address": "경기도 화성시 팔탄면 포승향남로 2960-19",
+    "_confidence": 100.0,
+    "_methods": {
+      "weight": "hybrid"
+    },
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 80.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 96.88,
+    "_issues": [
+      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)"
+    ],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_04"
+  },
+  {
+    "date": "2026-02-03",
+    "vehicle_num": "12가3458",
+    "total_weight": 23480,
+    "tare_weight": 18250,
+    "net_weight": 5230,
+    "company": "대한리싸이클",
+    "product": "고 철",
+    "type": "출고",
+    "ticket_id": null,
+    "issuer": "(주)한국자원",
+    "gps": {
+      "latitude": 37.234587,
+      "longitude": 127.123487
+    },
+    "phone": null,
+    "address": "경기도 용인시 처인구 포곡읍 123",
+    "_parser_method": "text_fallback_heuristic",
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 100.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 100.0,
+    "_issues": [],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_05_noisy"
+  },
+  {
+    "date": "2026-01-15",
+    "vehicle_num": "91구1234",
+    "total_weight": 31880,
+    "tare_weight": 22440,
+    "net_weight": 9440,
+    "company": "청정그린",
+    "product": "폐 지",
+    "type": "입고",
+    "ticket_id": "023487",
+    "issuer": "그린환경(주)",
+    "gps": {
+      "latitude": 36.87654,
+      "longitude": 126.54321
+    },
+    "phone": null,
+    "address": null,
+    "_parser_method": "text_fallback_heuristic",
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 100.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 100.0,
+    "_issues": [],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_06_noisy"
+  },
+  {
+    "date": "2026-02-05",
+    "vehicle_num": "56바7890",
+    "total_weight": 45670,
+    "tare_weight": 32180,
+    "net_weight": 13490,
+    "company": "(주)에코월드",
+    "product": "플라스틱 PE",
+    "type": null,
+    "ticket_id": null,
+    "issuer": "(주)클린테크",
+    "gps": {
+      "latitude": 35.548213,
+      "longitude": 129.314567
+    },
+    "phone": null,
+    "address": "울산광역시 남구 공업로 45B",
+    "_parser_method": "text_fallback_heuristic",
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 100.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 100.0,
+    "_issues": [],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_07_noisy"
+  },
+  {
+    "total_weight": 25400,
+    "tare_weight": 12200,
+    "net_weight": 13200,
+    "date": "2025-10-20",
+    "vehicle_num": "AB-1234",
+    "company": null,
+    "issuer": "Supplier : Global Resources Inc.",
+    "phone": null,
+    "product": null,
+    "ticket_id": "A8-1234",
+    "type": null,
+    "gps": null,
+    "address": null,
+    "_confidence": 100.0,
+    "_methods": {
+      "weight": "hybrid"
+    },
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 60.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 0.0
+    },
+    "_overall_confidence": 87.5,
+    "_issues": [
+      "차량번호: 비표준 형식",
+      "회사명: 회사명 없음"
+    ],
+    "_review_priority": "LOW",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_08_english"
+  },
+  {
+    "total_weight": 24500,
+    "tare_weight": 10200,
+    "net_weight": 14300,
+    "date": "2025-12-25",
+    "vehicle_num": "경기99바1234",
+    "company": null,
+    "issuer": null,
+    "phone": null,
+    "product": null,
+    "ticket_id": null,
+    "type": null,
+    "gps": null,
+    "address": null,
+    "_confidence": 90.0,
+    "_methods": {
+      "weight": "hybrid"
+    },
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 100.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 0.0
+    },
+    "_overall_confidence": 93.75,
+    "_issues": [
+      "회사명: 회사명 없음"
+    ],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_09_unit_confusion"
+  },
+  {
+    "total_weight": 12480,
+    "tare_weight": 7470,
+    "net_weight": 5010,
+    "date": null,
+    "vehicle_num": "8713",
+    "company": "(주)태양자원",
+    "issuer": null,
+    "phone": "031-1234-5678",
+    "product": null,
+    "ticket_id": "8713",
+    "type": null,
+    "gps": null,
+    "address": null,
+    "_confidence": 80.0,
+    "_methods": {
+      "weight": "hybrid"
+    },
+    "_field_confidences": {
+      "date": 0.0,
+      "vehicle_num": 80.0,
+      "total_weight": 100.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 81.25,
+    "_issues": [
+      "날짜: 날짜 없음",
+      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)"
+    ],
+    "_review_priority": "LOW",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_10_extreme_noise"
+  }
+]

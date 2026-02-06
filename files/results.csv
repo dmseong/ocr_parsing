@@ -1,0 +1,5 @@
+﻿filename,company,date,issuer,latitude,longitude,net_weight,product,tare_weight,ticket_id,total_weight,type,vehicle_num
+sample_01.json,품종명랑,2026-02-02,동우바이오(주),,,5010,,7470,8713,12480,,8713
+sample_02.json,고요환경,2026-02-02,장원C&S,37.718114,126.84494,5900,식물,7560,010889,13460,입고,80구8713
+sample_03.json,,2026-02-01,(주)경기도화성시팔탄면노하길,,,130,,13950,5405,14080,입고,5405
+sample_04.json,신성,2025-12-01,(주)하은펄프경기도화성시팔탄면포승향남로,,,1320,국판,12910,0022,14230,입고,0580

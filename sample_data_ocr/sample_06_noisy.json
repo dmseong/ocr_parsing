@@ -1,0 +1,269 @@
+{
+    "apiVersion": "1.1",
+    "confidence": 0.4215,
+    "modelVersion": "ocr-250904",
+    "mimeType": "multipart/form-data",
+    "numBilledPages": 1,
+    "pages": [
+        {
+            "id": 0,
+            "confidence": 0.4215,
+            "width": 1400,
+            "height": 1800,
+            "text": "게  근  표\n낱 짜 : 2O26-O1-15-OOO32\nID-NO : O234B7\n차 번 호 : 9l구1234\n샹 호 : 청정그린\n품 면 : 폐 지\n구 분 : 입 고\n\n충 중 량 : lO:32 31,BBO k9\n차 중 량 : ll:O5 22,44O kg\n실 충 량 : 9,44O k9\n\n그린환경(주)\n2O26-O1-15 ll:2O:45\n36.B7654, l26.54321O",
+            "words": [
+                {
+                    "id": 0,
+                    "text": "게",
+                    "confidence": 0.38
+                },
+                {
+                    "id": 1,
+                    "text": "근",
+                    "confidence": 0.29
+                },
+                {
+                    "id": 2,
+                    "text": "표",
+                    "confidence": 0.82
+                },
+                {
+                    "id": 10,
+                    "text": "낱",
+                    "confidence": 0.25
+                },
+                {
+                    "id": 11,
+                    "text": "짜",
+                    "confidence": 0.85
+                },
+                {
+                    "id": 12,
+                    "text": ":",
+                    "confidence": 0.94
+                },
+                {
+                    "id": 13,
+                    "text": "2O26-O1-15-OOO32",
+                    "confidence": 0.51
+                },
+                {
+                    "id": 20,
+                    "text": "ID-NO",
+                    "confidence": 0.75
+                },
+                {
+                    "id": 21,
+                    "text": ":",
+                    "confidence": 0.96
+                },
+                {
+                    "id": 22,
+                    "text": "O234B7",
+                    "confidence": 0.48
+                },
+                {
+                    "id": 30,
+                    "text": "차",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 31,
+                    "text": "번",
+                    "confidence": 0.85
+                },
+                {
+                    "id": 32,
+                    "text": "호",
+                    "confidence": 0.87
+                },
+                {
+                    "id": 33,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 34,
+                    "text": "9l구1234",
+                    "confidence": 0.52
+                },
+                {
+                    "id": 40,
+                    "text": "샹",
+                    "confidence": 0.31
+                },
+                {
+                    "id": 41,
+                    "text": "호",
+                    "confidence": 0.89
+                },
+                {
+                    "id": 42,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 43,
+                    "text": "청정그린",
+                    "confidence": 0.65
+                },
+                {
+                    "id": 50,
+                    "text": "품",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 51,
+                    "text": "면",
+                    "confidence": 0.35
+                },
+                {
+                    "id": 52,
+                    "text": ":",
+                    "confidence": 0.94
+                },
+                {
+                    "id": 53,
+                    "text": "폐",
+                    "confidence": 0.78
+                },
+                {
+                    "id": 54,
+                    "text": "지",
+                    "confidence": 0.81
+                },
+                {
+                    "id": 60,
+                    "text": "구",
+                    "confidence": 0.92
+                },
+                {
+                    "id": 61,
+                    "text": "분",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 62,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 63,
+                    "text": "입",
+                    "confidence": 0.85
+                },
+                {
+                    "id": 64,
+                    "text": "고",
+                    "confidence": 0.87
+                },
+                {
+                    "id": 70,
+                    "text": "충",
+                    "confidence": 0.28
+                },
+                {
+                    "id": 71,
+                    "text": "중",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 72,
+                    "text": "량",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 73,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 74,
+                    "text": "lO:32",
+                    "confidence": 0.45
+                },
+                {
+                    "id": 75,
+                    "text": "31,BBO",
+                    "confidence": 0.38
+                },
+                {
+                    "id": 76,
+                    "text": "k9",
+                    "confidence": 0.42
+                },
+                {
+                    "id": 80,
+                    "text": "차",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 81,
+                    "text": "중",
+                    "confidence": 0.89
+                },
+                {
+                    "id": 82,
+                    "text": "량",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 83,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 84,
+                    "text": "ll:O5",
+                    "confidence": 0.48
+                },
+                {
+                    "id": 85,
+                    "text": "22,44O",
+                    "confidence": 0.52
+                },
+                {
+                    "id": 86,
+                    "text": "kg",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 90,
+                    "text": "실",
+                    "confidence": 0.92
+                },
+                {
+                    "id": 91,
+                    "text": "충",
+                    "confidence": 0.32
+                },
+                {
+                    "id": 92,
+                    "text": "량",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 93,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 94,
+                    "text": "9,44O",
+                    "confidence": 0.55
+                },
+                {
+                    "id": 95,
+                    "text": "k9",
+                    "confidence": 0.39
+                },
+                {
+                    "id": 100,
+                    "text": "그린환경(주)",
+                    "confidence": 0.62
+                }
+            ]
+        }
+    ],
+    "stored": false
+}

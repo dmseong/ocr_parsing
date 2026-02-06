@@ -1,0 +1,229 @@
+{
+    "apiVersion": "1.1",
+    "confidence": 0.6123,
+    "modelVersion": "ocr-250904",
+    "mimeType": "multipart/form-data",
+    "numBilledPages": 1,
+    "pages": [
+        {
+            "id": 0,
+            "confidence": 0.6123,
+            "width": 1568,
+            "height": 1920,
+            "text": "게 량 확 인 서\n(공급자보관용)\n게량일시 : 2O26-O2-O5 14:3O\n차량 NO : 56바7B9O\n상 호 : (주)에코월드\n제 품 : 플라스틱 PE\n\n총 중 량 : l4:32 45,67O k9\n공동중량 : l5:OB 32,lBO k9\n실 중 량 : l3,49O k9\n\n(주)클린테크\n울산광역시 남구 공업로 45B\nTel)O52-2B4-56OO\n2O26-O2-O5 l5:2O:lB\n35.54B2l3, l29.3l4567",
+            "words": [
+                {
+                    "id": 0,
+                    "text": "게",
+                    "confidence": 0.42
+                },
+                {
+                    "id": 1,
+                    "text": "량",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 2,
+                    "text": "확",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 3,
+                    "text": "인",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 4,
+                    "text": "서",
+                    "confidence": 0.89
+                },
+                {
+                    "id": 10,
+                    "text": "(공급자보관용)",
+                    "confidence": 0.72
+                },
+                {
+                    "id": 20,
+                    "text": "게량일시",
+                    "confidence": 0.48
+                },
+                {
+                    "id": 21,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 22,
+                    "text": "2O26-O2-O5",
+                    "confidence": 0.55
+                },
+                {
+                    "id": 23,
+                    "text": "14:3O",
+                    "confidence": 0.58
+                },
+                {
+                    "id": 30,
+                    "text": "차량",
+                    "confidence": 0.85
+                },
+                {
+                    "id": 31,
+                    "text": "NO",
+                    "confidence": 0.78
+                },
+                {
+                    "id": 32,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 33,
+                    "text": "56바7B9O",
+                    "confidence": 0.45
+                },
+                {
+                    "id": 40,
+                    "text": "상",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 41,
+                    "text": "호",
+                    "confidence": 0.89
+                },
+                {
+                    "id": 42,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 43,
+                    "text": "(주)에코월드",
+                    "confidence": 0.68
+                },
+                {
+                    "id": 50,
+                    "text": "제",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 51,
+                    "text": "품",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 52,
+                    "text": ":",
+                    "confidence": 0.94
+                },
+                {
+                    "id": 53,
+                    "text": "플라스틱",
+                    "confidence": 0.75
+                },
+                {
+                    "id": 54,
+                    "text": "PE",
+                    "confidence": 0.82
+                },
+                {
+                    "id": 60,
+                    "text": "총",
+                    "confidence": 0.92
+                },
+                {
+                    "id": 61,
+                    "text": "중",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 62,
+                    "text": "량",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 63,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 64,
+                    "text": "l4:32",
+                    "confidence": 0.42
+                },
+                {
+                    "id": 65,
+                    "text": "45,67O",
+                    "confidence": 0.52
+                },
+                {
+                    "id": 66,
+                    "text": "k9",
+                    "confidence": 0.38
+                },
+                {
+                    "id": 70,
+                    "text": "공동중량",
+                    "confidence": 0.35
+                },
+                {
+                    "id": 71,
+                    "text": ":",
+                    "confidence": 0.94
+                },
+                {
+                    "id": 72,
+                    "text": "l5:OB",
+                    "confidence": 0.41
+                },
+                {
+                    "id": 73,
+                    "text": "32,lBO",
+                    "confidence": 0.48
+                },
+                {
+                    "id": 74,
+                    "text": "k9",
+                    "confidence": 0.40
+                },
+                {
+                    "id": 80,
+                    "text": "실",
+                    "confidence": 0.93
+                },
+                {
+                    "id": 81,
+                    "text": "중",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 82,
+                    "text": "량",
+                    "confidence": 0.92
+                },
+                {
+                    "id": 83,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 84,
+                    "text": "l3,49O",
+                    "confidence": 0.50
+                },
+                {
+                    "id": 85,
+                    "text": "k9",
+                    "confidence": 0.42
+                },
+                {
+                    "id": 90,
+                    "text": "(주)클린테크",
+                    "confidence": 0.65
+                }
+            ]
+        }
+    ],
+    "stored": false
+}

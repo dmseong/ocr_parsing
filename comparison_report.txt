@@ -1,0 +1,104 @@
+Sample                    | Field           | Result               | Answer               | Status
+-----------------------------------------------------------------------------------------------
+sample_01                 | date            | 2026-02-02           | 2026-02-02           | ✅
+sample_01                 | vehicle_num     | 8713                 | 8713                 | ✅
+sample_01                 | total_weight    | 12480                | 12480                | ✅
+sample_01                 | tare_weight     | 7470                 | 7470                 | ✅
+sample_01                 | net_weight      | 5010                 | 5010                 | ✅
+sample_01                 | company         | 곰욕환경폐기물              | 곰욕환경폐기물              | ✅
+sample_01                 | product         | None                 | None                 | ✅
+sample_01                 | type            | None                 | None                 | ✅
+sample_01                 | ticket_id       | 0016                 | 0016                 | ✅
+sample_01                 | issuer          | 동우바이오(주)             | 동우바이오(주)             | ✅
+sample_02                 | date            | 2026-02-02           | 2026-02-02           | ✅
+sample_02                 | vehicle_num     | 80구8713              | 80구8713              | ✅
+sample_02                 | total_weight    | 13460                | 13460                | ✅
+sample_02                 | tare_weight     | 7560                 | 7560                 | ✅
+sample_02                 | net_weight      | 5900                 | 5900                 | ✅
+sample_02                 | company         | 고요환경                 | 고요환경                 | ✅
+sample_02                 | product         | 식물                   | 식물                   | ✅
+sample_02                 | type            | 입고                   | 입고                   | ✅
+sample_02                 | ticket_id       | 010889               | 010889               | ✅
+sample_02                 | issuer          | 장원C&S                | 장원C&S                | ✅
+sample_03                 | date            | 2026-02-01           | 2026-02-01           | ✅
+sample_03                 | vehicle_num     | 5405                 | 5405                 | ✅
+sample_03                 | total_weight    | 14080                | 14080                | ✅
+sample_03                 | tare_weight     | 13950                | 13950                | ✅
+sample_03                 | net_weight      | 130                  | 130                  | ✅
+sample_03                 | company         | None                 | None                 | ✅
+sample_03                 | product         | None                 | None                 | ✅
+sample_03                 | type            | 입고                   | 입고                   | ✅
+sample_03                 | ticket_id       | 5                    | 5                    | ✅
+sample_03                 | issuer          | 정우리사이클링 (주)          | 정우리사이클링(주)           | ✅
+sample_04                 | date            | 2025-12-01           | 2025-12-01           | ✅
+sample_04                 | vehicle_num     | 0580                 | 0580                 | ✅
+sample_04                 | total_weight    | 14230                | 14230                | ✅
+sample_04                 | tare_weight     | 12910                | 12910                | ✅
+sample_04                 | net_weight      | 1320                 | 1320                 | ✅
+sample_04                 | company         | 신성(푸디스트)             | 신성(푸디스트)             | ✅
+sample_04                 | product         | 국판                   | 국판                   | ✅
+sample_04                 | type            | 입고                   | 입고                   | ✅
+sample_04                 | ticket_id       | 0022                 | 0022                 | ✅
+sample_04                 | issuer          | (주) 하은펄프             | (주)하은펄프              | ✅
+sample_05_noisy           | date            | 2026-02-03           | 2026-02-03           | ✅
+sample_05_noisy           | vehicle_num     | 12가3458              | 12가3458              | ✅
+sample_05_noisy           | total_weight    | 23480                | 23480                | ✅
+sample_05_noisy           | tare_weight     | 18250                | 18250                | ✅
+sample_05_noisy           | net_weight      | 5230                 | 5230                 | ✅
+sample_05_noisy           | company         | 대한리싸이클               | 대한리싸이클               | ✅
+sample_05_noisy           | product         | 고 철                  | 고철                   | ✅
+sample_05_noisy           | type            | 출고                   | 출고                   | ✅
+sample_05_noisy           | ticket_id       | None                 | None                 | ✅
+sample_05_noisy           | issuer          | (주)한국자원              | (주)한국자원              | ✅
+sample_06_noisy           | date            | 2026-01-15           | 2026-01-15           | ✅
+sample_06_noisy           | vehicle_num     | 91구1234              | 91구1234              | ✅
+sample_06_noisy           | total_weight    | 31880                | 31880                | ✅
+sample_06_noisy           | tare_weight     | 22440                | 22440                | ✅
+sample_06_noisy           | net_weight      | 9440                 | 9440                 | ✅
+sample_06_noisy           | company         | 청정그린                 | 청정그린                 | ✅
+sample_06_noisy           | product         | 폐 지                  | 폐지                   | ✅
+sample_06_noisy           | type            | 입고                   | 입고                   | ✅
+sample_06_noisy           | ticket_id       | 023487               | 023487               | ✅
+sample_06_noisy           | issuer          | 그린환경(주)              | 그린환경(주)              | ✅
+sample_07_noisy           | date            | 2026-02-05           | 2026-02-05           | ✅
+sample_07_noisy           | vehicle_num     | 56바7890              | 56바7890              | ✅
+sample_07_noisy           | total_weight    | 45670                | 45670                | ✅
+sample_07_noisy           | tare_weight     | 32180                | 32180                | ✅
+sample_07_noisy           | net_weight      | 13490                | 13490                | ✅
+sample_07_noisy           | company         | (주)에코월드              | (주)에코월드              | ✅
+sample_07_noisy           | product         | 플라스틱 PE              | 플라스틱 PE              | ✅
+sample_07_noisy           | type            | None                 | None                 | ✅
+sample_07_noisy           | ticket_id       | None                 | None                 | ✅
+sample_07_noisy           | issuer          | (주)클린테크              | (주)클린테크              | ✅
+sample_08_english         | date            | 2025-10-20           | 2025-10-20           | ✅
+sample_08_english         | vehicle_num     | AB-1234              | AB-1234              | ✅
+sample_08_english         | total_weight    | 25400                | 25400                | ✅
+sample_08_english         | tare_weight     | 12200                | 12200                | ✅
+sample_08_english         | net_weight      | 13200                | 13200                | ✅
+sample_08_english         | company         | None                 | None                 | ✅
+sample_08_english         | product         | None                 | None                 | ✅
+sample_08_english         | type            | None                 | None                 | ✅
+sample_08_english         | ticket_id       | A8-1234              | None                 | ❌
+sample_08_english         | issuer          | Supplier : Global Resources Inc. | Global Resources Inc. | ✅
+sample_09_unit_confusion  | date            | 2025-12-25           | 2025-12-25           | ✅
+sample_09_unit_confusion  | vehicle_num     | 경기99바1234            | 경기99바1234            | ✅
+sample_09_unit_confusion  | total_weight    | 24500                | 24500                | ✅
+sample_09_unit_confusion  | tare_weight     | 10200                | 10200                | ✅
+sample_09_unit_confusion  | net_weight      | 14300                | 14300                | ✅
+sample_09_unit_confusion  | company         | None                 | None                 | ✅
+sample_09_unit_confusion  | product         | None                 | None                 | ✅
+sample_09_unit_confusion  | type            | None                 | None                 | ✅
+sample_09_unit_confusion  | ticket_id       | None                 | None                 | ✅
+sample_09_unit_confusion  | issuer          | None                 | None                 | ✅
+sample_10_extreme_noise   | date            | None                 | None                 | ✅
+sample_10_extreme_noise   | vehicle_num     | 8713                 | 8713                 | ✅
+sample_10_extreme_noise   | total_weight    | 12480                | 12480                | ✅
+sample_10_extreme_noise   | tare_weight     | 7470                 | 7470                 | ✅
+sample_10_extreme_noise   | net_weight      | 5010                 | 5010                 | ✅
+sample_10_extreme_noise   | company         | (주)태양자원              | (주)태양자원              | ✅
+sample_10_extreme_noise   | product         | None                 | None                 | ✅
+sample_10_extreme_noise   | type            | None                 | None                 | ✅
+sample_10_extreme_noise   | ticket_id       | 8713                 | 8713                 | ✅
+sample_10_extreme_noise   | issuer          | None                 | None                 | ✅
+-----------------------------------------------------------------------------------------------
+Total Match Rate: 99/100 (99.00%)

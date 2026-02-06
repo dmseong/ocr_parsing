@@ -1,0 +1,249 @@
+{
+    "apiVersion": "1.1",
+    "confidence": 0.5832,
+    "modelVersion": "ocr-250904",
+    "mimeType": "multipart/form-data",
+    "numBilledPages": 1,
+    "pages": [
+        {
+            "id": 0,
+            "confidence": 0.5832,
+            "width": 1200,
+            "height": 1600,
+            "text": "** 게 량 중 멍 셔 **\n게량일자 : 2O26-O2-O3\n차 량 번 호 : 12가345B\n거 래 처 : 대한리싸이클\n품 명 : 고 철\n구 분 : 출 고\n\n총중량 : O8:45 23,4BO kg\n공차중량 : O9:O2 1B,25O kg\n싫중량 : 5,23O k9\n\n(주)한국자원\n경기도 용인시 처인구 포곡읍 123\nTEL : O31-333-44B8\n2O26-O2-O3 O9:15:32\n37.2345B7, 127.1234B7",
+            "words": [
+                {
+                    "id": 0,
+                    "text": "**",
+                    "confidence": 0.55
+                },
+                {
+                    "id": 1,
+                    "text": "게",
+                    "confidence": 0.41
+                },
+                {
+                    "id": 2,
+                    "text": "량",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 3,
+                    "text": "중",
+                    "confidence": 0.85
+                },
+                {
+                    "id": 4,
+                    "text": "멍",
+                    "confidence": 0.32
+                },
+                {
+                    "id": 5,
+                    "text": "셔",
+                    "confidence": 0.38
+                },
+                {
+                    "id": 6,
+                    "text": "**",
+                    "confidence": 0.52
+                },
+                {
+                    "id": 10,
+                    "text": "게량일자",
+                    "confidence": 0.45
+                },
+                {
+                    "id": 11,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 12,
+                    "text": "2O26-O2-O3",
+                    "confidence": 0.62
+                },
+                {
+                    "id": 20,
+                    "text": "차",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 21,
+                    "text": "량",
+                    "confidence": 0.89
+                },
+                {
+                    "id": 22,
+                    "text": "번",
+                    "confidence": 0.87
+                },
+                {
+                    "id": 23,
+                    "text": "호",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 24,
+                    "text": ":",
+                    "confidence": 0.96
+                },
+                {
+                    "id": 25,
+                    "text": "12가345B",
+                    "confidence": 0.58
+                },
+                {
+                    "id": 30,
+                    "text": "거",
+                    "confidence": 0.92
+                },
+                {
+                    "id": 31,
+                    "text": "래",
+                    "confidence": 0.88
+                },
+                {
+                    "id": 32,
+                    "text": "처",
+                    "confidence": 0.90
+                },
+                {
+                    "id": 33,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 34,
+                    "text": "대한리싸이클",
+                    "confidence": 0.72
+                },
+                {
+                    "id": 40,
+                    "text": "품",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 41,
+                    "text": "명",
+                    "confidence": 0.89
+                },
+                {
+                    "id": 42,
+                    "text": ":",
+                    "confidence": 0.94
+                },
+                {
+                    "id": 43,
+                    "text": "고",
+                    "confidence": 0.85
+                },
+                {
+                    "id": 44,
+                    "text": "철",
+                    "confidence": 0.87
+                },
+                {
+                    "id": 50,
+                    "text": "구",
+                    "confidence": 0.93
+                },
+                {
+                    "id": 51,
+                    "text": "분",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 52,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 53,
+                    "text": "출",
+                    "confidence": 0.82
+                },
+                {
+                    "id": 54,
+                    "text": "고",
+                    "confidence": 0.84
+                },
+                {
+                    "id": 60,
+                    "text": "총중량",
+                    "confidence": 0.78
+                },
+                {
+                    "id": 61,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 62,
+                    "text": "O8:45",
+                    "confidence": 0.52
+                },
+                {
+                    "id": 63,
+                    "text": "23,4BO",
+                    "confidence": 0.48
+                },
+                {
+                    "id": 64,
+                    "text": "kg",
+                    "confidence": 0.91
+                },
+                {
+                    "id": 70,
+                    "text": "공차중량",
+                    "confidence": 0.75
+                },
+                {
+                    "id": 71,
+                    "text": ":",
+                    "confidence": 0.94
+                },
+                {
+                    "id": 72,
+                    "text": "O9:O2",
+                    "confidence": 0.49
+                },
+                {
+                    "id": 73,
+                    "text": "1B,25O",
+                    "confidence": 0.42
+                },
+                {
+                    "id": 74,
+                    "text": "kg",
+                    "confidence": 0.92
+                },
+                {
+                    "id": 80,
+                    "text": "싫중량",
+                    "confidence": 0.35
+                },
+                {
+                    "id": 81,
+                    "text": ":",
+                    "confidence": 0.95
+                },
+                {
+                    "id": 82,
+                    "text": "5,23O",
+                    "confidence": 0.55
+                },
+                {
+                    "id": 83,
+                    "text": "k9",
+                    "confidence": 0.41
+                },
+                {
+                    "id": 90,
+                    "text": "(주)한국자원",
+                    "confidence": 0.68
+                }
+            ]
+        }
+    ],
+    "stored": false
+}
