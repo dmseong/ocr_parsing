@@ -40,7 +40,7 @@ python test/compare_answer.py
 
 ## 🛠️ 의존성 및 환경
 
-- **Core**: Python 3.10+
+- **Core**: Python 3.12.5
 - **UI & Visualization**: `streamlit` (대시보드 운영)
 - **Data Processing**: `pandas` (결합 및 통계)
 - **NLP & Fuzzy Matching**: 
