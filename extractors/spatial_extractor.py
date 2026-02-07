@@ -1,7 +1,7 @@
 import re
 from typing import List, Tuple, Optional, Any
 from .common import WordBox
-from .config import CONSTANTS
+from .config import CONSTANTS, THRESHOLDS, PATTERNS
 
 class SpatialValueExtractor:
     """
@@ -58,7 +58,7 @@ class SpatialValueExtractor:
                     continue
             
             # 조건 1: 오른쪽에 있음 (-20은 겹침/오차를 고려한 마진)
-            is_right = word.x_min > anchor.x_max - 20
+            is_right = word.x_min > anchor.x_max - THRESHOLDS['SPATIAL']['MARGIN_RIGHT']
             
             # 조건 2: 세로 위치가 비슷함 (같은 라인 또는 바로 아래)
             y_diff = word.centroid[1] - anchor.centroid[1]
@@ -68,28 +68,28 @@ class SpatialValueExtractor:
                 continue
 
             # 조건 1: X축 위치 (라인에 따라 다름)
-            if abs(y_diff) <= 15: # 같은 라인
+            if abs(y_diff) <= THRESHOLDS['SPATIAL']['SAME_LINE_Y_DIFF']: # 같은 라인
                 # 반드시 라벨 오른쪽에 있어야 함
-                is_valid_x = word.x_min > anchor.x_max - 20
+                is_valid_x = word.x_min > anchor.x_max - THRESHOLDS['SPATIAL']['MARGIN_RIGHT']
             else: # 다음 라인 (아래)
                 # 라벨의 시작점과 비슷하거나 오른쪽에 있으면 됨 (Sample 10 대응)
                 # 너무 왼쪽으로 치우치지만 않으면 허용
-                is_valid_x = word.x_min >= anchor.x_min - 50
+                is_valid_x = word.x_min >= anchor.x_min - THRESHOLDS['SPATIAL']['MARGIN_NEXT_LINE_START']
 
             if is_valid_x:
                 x_dist = word.x_min - anchor.x_max
                 
                 # [수정] 같은 라인(Y오차 15이내) 우선순위 강력 부여
-                if abs(y_diff) <= 15:
+                if abs(y_diff) <= THRESHOLDS['SPATIAL']['SAME_LINE_Y_DIFF']:
                     x_dist = word.x_min - anchor.x_max
-                    dist = x_dist * 0.5
+                    dist = x_dist * THRESHOLDS['SPATIAL']['WEIGHT_SAME_LINE']
                 else:
                     # [Fix] 다음 라인인 경우, X축 거리는 '라벨 시작점과의 차이'(정렬)로 계산
                     # 기존 (x_min - x_max)는 라벨이 길수록 음수가 되어 거리가 줄어드는 오류 존재
                     x_align_diff = abs(word.x_min - anchor.x_min)
                     
                     # 줄바꿈 페널티 완화 (Sample 01 대응) + 정렬 차이
-                    dist = x_align_diff + (abs(y_diff) * 3)
+                    dist = x_align_diff + (abs(y_diff) * THRESHOLDS['SPATIAL']['WEIGHT_VERTICAL_PENALTY_MULTIPLIER'])
                 
                 if dist <= threshold:
                     candidates.append((dist, word))
@@ -141,13 +141,13 @@ class SpatialValueExtractor:
             'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
         }
         
-        mon_match = re.search(r'(\d{4})[-/\.\s]+([A-Za-z]{3})[-/\.\s]+(\d{1,2})', combined)
+        mon_match = re.search(PATTERNS['DATE'][0], combined)
         if mon_match:
             y, m_str, d = mon_match.groups()
             m = month_map.get(m_str.capitalize())
             if m: return f"{y}-{m}-{d.zfill(2)}"
         
-        dot_match = re.search(r'(\d{2,4})[\.\-/]\s*(\d{1,2})[\.\-/]\s*(\d{1,2})', combined)
+        dot_match = re.search(PATTERNS['DATE'][1], combined)
         if dot_match:
             y, m, d = dot_match.groups()
             if len(y) == 2: y = "20" + y
@@ -159,17 +159,12 @@ class SpatialValueExtractor:
         sorted_candidates = sorted(candidates[:8], key=lambda x: x[1].x_min)
         combined_nospace = "".join(w.text for _, w in sorted_candidates).replace(" ", "")
         
-        match = re.search(r'([가-힣]{0,2})\d{2,3}[가-힣]\d{4}', combined_nospace)
-        if match: return match.group()
-            
-        match = re.search(r'[A-Z]{1,3}[-\s]?\d{3,4}', combined_nospace)
-        if match: return match.group()
-            
-        match = re.search(r'(?<!\d)\d{4}(?!\d)', combined_nospace)
+        # PATTERNS['VEHICLE']['PARSER_REGEX'] 사용
+        match = re.search(PATTERNS['VEHICLE']['PARSER_REGEX'], combined_nospace)
         if match:
-            num = match.group()
-            if not num.startswith('202'): 
-                return num
+             val = match.group()
+             if not val.startswith('202'):
+                  return val
         return None
     
     def _parse_text_candidates(self, candidates: List[Tuple[float, WordBox]]) -> Optional[str]:

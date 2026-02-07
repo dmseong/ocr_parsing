@@ -5,7 +5,7 @@ sample_01                 | vehicle_num     | 8713                 | 8713       
 sample_01                 | total_weight    | 12480                | 12480                | ✅
 sample_01                 | tare_weight     | 7470                 | 7470                 | ✅
 sample_01                 | net_weight      | 5010                 | 5010                 | ✅
-sample_01                 | company         | 곰욕환경폐기물품종명랑05        | 곰욕환경폐기물              | ❌
+sample_01                 | company         | 곰욕환경폐기물              | 곰욕환경폐기물              | ✅
 sample_01                 | product         | None                 | None                 | ✅
 sample_01                 | type            | None                 | None                 | ✅
 sample_01                 | ticket_id       | None                 | 0016                 | ❌
@@ -111,4 +111,4 @@ sample_11                 | type            | None                 | None       
 sample_11                 | ticket_id       | 26-0206-003          | 26-0206-003          | ✅
 sample_11                 | issuer          | None                 | None                 | ✅
 -----------------------------------------------------------------------------------------------
-Total Match Rate: 106/110 (96.36%)
+Total Match Rate: 107/110 (97.27%)

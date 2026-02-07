@@ -1,7 +1,7 @@
 import re
 from typing import List, Dict, Optional
 from .common import WordBox
-from .config import CONSTANTS
+from .config import CONSTANTS, PATTERNS, KEYWORDS, THRESHOLDS
 
 class HeuristicValueFinder:
     """
@@ -58,7 +58,7 @@ class HeuristicValueFinder:
             nums = [t[0] for t in triplet]
             for perm in permutations(nums):
                 total, tare, net = perm
-                if abs(total - (tare + net)) <= 50:
+                if abs(total - (tare + net)) <= THRESHOLDS['WEIGHT']['EQUATION_TOLERANCE']:
                     if self._validate_weight_logic(total, tare, net):
                         valid_triplets.append({
                             'total_weight': total,
@@ -98,7 +98,7 @@ class HeuristicValueFinder:
                 max_dist = max(max_dist, dist)
                 
         # 최대 거리가 600px 이상이면 무효 (너무 흩어져 있음)
-        if max_dist > 600: 
+        if max_dist > THRESHOLDS['WEIGHT']['SPATIAL_MAX_DIST']: 
             return False
             
         # 2. 정렬 검사
@@ -106,11 +106,11 @@ class HeuristicValueFinder:
         y_range = max(ys) - min(ys)
         
         # 세로 정렬(X 비슷) 또는 가로 정렬(Y 비슷)
-        if x_range <= 100 or y_range <= 50:
+        if x_range <= THRESHOLDS['WEIGHT']['SPATIAL_ALIGN_X'] or y_range <= THRESHOLDS['WEIGHT']['SPATIAL_ALIGN_Y']:
             return True
         
         # 정렬되지 않았더라도 거리가 매우 가까우면(300px 이내) 인정
-        if max_dist <= 300:
+        if max_dist <= THRESHOLDS['WEIGHT']['SPATIAL_NEAR_DIST']:
             return True
             
         return False
@@ -135,7 +135,7 @@ class HeuristicValueFinder:
                 if is_ton or ('.' in val_str and val_float < 100):
                     val_float *= 1000
                 val_int = int(round(val_float))
-                if 100 <= val_int <= 100000:
+                if THRESHOLDS['WEIGHT']['MIN'] <= val_int <= THRESHOLDS['WEIGHT']['MAX']:
                     numbers.append(val_int)
             except ValueError:
                 pass
@@ -146,27 +146,24 @@ class HeuristicValueFinder:
         if total <= 0 or tare < 500 or net < 10: return False
         if tare >= total or net >= total: return False
         ratio = net / total
-        if not (0.01 <= ratio <= 0.9): return False
+        if not (THRESHOLDS['WEIGHT']['RATIO_MIN'] <= ratio <= THRESHOLDS['WEIGHT']['RATIO_MAX']): return False
         return True
     
     def find_date_in_text(self, text: str) -> Optional[str]:
         """전체 텍스트에서 날짜 찾기"""
-        month_map = {
-            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-        }
+        month_map = KEYWORDS['MONTH_MAP']
         
         # [Fix] .. 포함 패턴 (2O26. 02.. 06)
         # 1. 텍스트 자체에서 ..을 .으로 치환
         text_norm = text.replace("..", ".").replace("...", ".")
         
-        mon_match = re.search(r'(\d{4})[-/\.\s]+([A-Za-z]{3})[-/\.\s]+(\d{1,2})', text_norm)
+        mon_match = re.search(PATTERNS['DATE'][0], text_norm)
         if mon_match:
             y, m_str, d = mon_match.groups()
             m = month_map.get(m_str.capitalize())
             if m: return f"{y}-{m}-{d.zfill(2)}"
         
-        dot_match = re.search(r'(\d{2,4})[\.\-/]\s*(\d{1,2})[\.\-/]\s*(\d{1,2})', text_norm)
+        dot_match = re.search(PATTERNS['DATE'][1], text_norm)
         if dot_match:
             y, m, d = dot_match.groups()
             if len(y) == 2: y = "20" + y
@@ -177,7 +174,7 @@ class HeuristicValueFinder:
         clean_text = self._normalize_ocr_digits(text_norm)
         
         # 2. 보정된 텍스트에서 검색
-        noisy_match = re.search(r'(\d{4})\s*[,.\-/]\s*(\d{1,2})\s*[,.\-/]\s*(\d{1,2})', clean_text)
+        noisy_match = re.search(PATTERNS['DATE'][2], clean_text)
         if noisy_match:
             y, m, d = noisy_match.groups()
             return f"{y}-{m.zfill(2)}-{d.zfill(2)}"
@@ -188,14 +185,9 @@ class HeuristicValueFinder:
         """전체 텍스트에서 차량번호 찾기"""
         # 1. 표준 패턴 (가장 신뢰도 높음)
         # 12가3456 (신규) / 경기12가3456 (구형) / 서울1가1234 (구형) / 02가1234 (건설)
-        standard_patterns = [
-            r'[가-힣]{2}\s*\d{2}\s*[가-힣]\s*\d{4}',    # 경기12가3456
-            r'[가-힣]{2}\s*\d{1,2}\s*[가-힣]\s*\d{4}',  # 서울1가1234
-            r'\d{2,3}\s*[가-힣]\s*\d{4}',              # 12가3456, 123가4567
-            r'0\d[-\s]*\d{4}',                         # 건설기계 (02-1234)
-            r'[가-힣]{2}\s*\d{3}-\d{3}',               # 외교 (000-000)
-            r'임\s*시\s*\d{4,6}'                       # 임시번호
-        ]
+        # 1. 표준 패턴 (가장 신뢰도 높음)
+        # 12가3456 (신규) / 경기12가3456 (구형) / 서울1가1234 (구형) / 02가1234 (건설)
+        standard_patterns = PATTERNS['VEHICLE']['STANDARD']
         
         for pat in standard_patterns:
             match = re.search(pat, text)
@@ -208,7 +200,7 @@ class HeuristicValueFinder:
         
         # 2-1. [Recovered] 숫자+한글+숫자 (가장 강력한 복구 대상)
         # 56바7B9O -> 56바7890
-        match = re.search(r'(\d{2,3})([가-힣ㄱ-ㅎㅏ-ㅣ])([A-Z0-9]{4})', clean_text)
+        match = re.search(PATTERNS['VEHICLE']['NOISE_REC'], clean_text)
         if match:
              prefix = match.group(1)
              char = match.group(2)
@@ -296,7 +288,7 @@ class HeuristicValueFinder:
         # 날짜(20xx-xx-xx) 뒤에 오는 1~8자리 숫자 추출
         # [Fix] 1글자도 허용하되, 같은 줄(공백)에 있는 것만 인정 (Sample 05 GPS 좌표 오매칭 방지)
         # [Fix] (?!\d|:) 추가하여 시간(14:30)의 '14' 등이 잡히는 것 방지
-        match = re.search(r'20\d{2}[-.\s/]*\d{1,2}[-.\s/]*\d{1,2}(?:\s+\d{2}:\d{2}(?::\d{2})?)? +([A-Z0-9]{1,8})(?![\d:])', clean_text)
+        match = re.search(PATTERNS['TICKET_ID']['DATE_SUFFIX'], clean_text)
         if match:
             val = match.group(1)
             if val.isdigit() and int(val) < 10000:
@@ -404,36 +396,36 @@ class HeuristicValueFinder:
         # [Fix] 노이즈(B->8 등) 보정 후 추출
         text = self._normalize_ocr_digits(text)
         
-        pattern = r'(\d{2}\.\d{4,})[^\d]{1,30}(\d{2,3}\.\d{4,})'
+        pattern = PATTERNS['GPS']['STANDARD']
         match = re.search(pattern, text)
         if match:
             lat = float(match.group(1))
             lon = float(match.group(2))
-            if 33 <= lat <= 43 and 124 <= lon <= 132:
+            if THRESHOLDS['GPS']['LAT_MIN'] <= lat <= THRESHOLDS['GPS']['LAT_MAX'] and THRESHOLDS['GPS']['LON_MIN'] <= lon <= THRESHOLDS['GPS']['LON_MAX']:
                 return {"latitude": lat, "longitude": lon}
         
         # 2. Relaxed Pattern (중간에 공백/특수문자 허용)
         # 37 1234, 127 1234 형태
-        relaxed = re.search(r'(3\d[\.,]\d{4,})[^\d]{1,50}(1[23]\d[\.,]\d{4,})', text)
+        relaxed = re.search(PATTERNS['GPS']['RELAXED'], text)
         if relaxed:
             try:
                 lat = float(relaxed.group(1).replace(',', '.'))
                 lon = float(relaxed.group(2).replace(',', '.'))
-                if 33 <= lat <= 43 and 124 <= lon <= 132:
+                if THRESHOLDS['GPS']['LAT_MIN'] <= lat <= THRESHOLDS['GPS']['LAT_MAX'] and THRESHOLDS['GPS']['LON_MIN'] <= lon <= THRESHOLDS['GPS']['LON_MAX']:
                     return {"latitude": lat, "longitude": lon}
             except: pass
         
-        candidates = re.findall(r'(\d{2,3}\.\d{4,})', text)
+        candidates = re.findall(PATTERNS['GPS']['CANDIDATE'], text)
         if len(candidates) >= 2:
-            lats = [float(c) for c in candidates if 33 <= float(c) <= 43]
-            lons = [float(c) for c in candidates if 124 <= float(c) <= 132]
+            lats = [float(c) for c in candidates if THRESHOLDS['GPS']['LAT_MIN'] <= float(c) <= THRESHOLDS['GPS']['LAT_MAX']]
+            lons = [float(c) for c in candidates if THRESHOLDS['GPS']['LON_MIN'] <= float(c) <= THRESHOLDS['GPS']['LON_MAX']]
             if lats and lons:
                 return {"latitude": lats[0], "longitude": lons[0]}
         return None
 
     def extract_phone(self, text: str) -> Optional[str]:
         """전화번호 추출"""
-        pattern = r'(0\d{1,2})\s*[-.)]\s*(\d{3,4})\s*[-.]\s*(\d{4})'
+        pattern = PATTERNS['PHONE']
         matches = list(re.finditer(pattern, text))
         for match in matches:
             if match.group(1) != '010':
@@ -466,11 +458,15 @@ class HeuristicValueFinder:
         # 상호: 청정그린, 거래처: 대한리싸이클 등
         # [Fix] 샹호(상호 오타) 추가 및 공백 허용 (거 래 처)
         # 예: "거 래 처 : 대한리싸이클"
-        match = re.search(r'(상\s*호|샹\s*호|성\s*명|거\s*래\s*처|공\s*급\s*자|공\s*급\s*받\s*는\s*자|업\s*체\s*명)\s*[:;：]?\s*([가-힣\(\)A-Z0-9 ]+)', text)
+        # 1. 명시적 라벨
+        # 상호: 청정그린, 거래처: 대한리싸이클 등
+        # [Fix] 샹호(상호 오타) 추가 및 공백 허용 (거 래 처)
+        # 예: "거 래 처 : 대한리싸이클"
+        match = re.search(PATTERNS['COMPANY']['LABEL'], text)
         if match:
             val = match.group(2).strip()
             # 노이즈 제거: 전화, TEL 등 추가
-            stoppers = ['품면', '품명', '품 명', '구분', '입고', '출고', '총중량', '실중량', '공차', '차량', '날짜', '보관용', '전화', 'TEL', 'FAX'] 
+            stoppers = KEYWORDS['COMPANY_STOPPERS']
             for stopper in stoppers:
                 if stopper in val:
                     val = val.split(stopper)[0]
@@ -482,7 +478,8 @@ class HeuristicValueFinder:
             if len(val) >= 2: return val
             
         # 2. 귀하 패턴
-        match = re.search(r'([가-힣\(\)A-Z0-9 ]+)\s*귀하', text)
+        # 2. 귀하 패턴
+        match = re.search(PATTERNS['COMPANY']['HONORIFIC'], text)
         if match:
              val = match.group(1).strip()
              # 라인 끝부분만 가져오기 위해 공백으로 분리 후 마지막 2-3어절 체크
@@ -498,7 +495,8 @@ class HeuristicValueFinder:
         # 중요: (주)만 덜렁 잡히지 않도록 앞뒤로 문자가 있어야 함
         
         # Case 1: (주) 접미사 (예: 그린환경(주), 그린환경 (주))
-        matches_suffix = re.finditer(r'([가-힣A-Za-z0-9 ]+)\s*\(주\)', text)
+        # Case 1: (주) 접미사 (예: 그린환경(주), 그린환경 (주))
+        matches_suffix = re.finditer(PATTERNS['COMPANY']['CORP_SUFFIX'], text)
         for m in matches_suffix:
              name = m.group(1).strip()
              # 너무 긴 앞부분은 자름 (최근 3어절)
@@ -511,7 +509,7 @@ class HeuristicValueFinder:
                  
         # Case 2: (주) 접두사 (예: (주)에코월드, (주) 에코월드)
         # [Fix] 공백 허용 및 숫자만 있는 경우 필터링
-        matches_prefix = re.finditer(r'\(주\)\s*([가-힣A-Za-z0-9 ]+)', text)
+        matches_prefix = re.finditer(PATTERNS['COMPANY']['CORP_PREFIX'], text)
         for m in matches_prefix:
             name = m.group(1).strip()
             
@@ -543,7 +541,7 @@ class HeuristicValueFinder:
         # [Fix] 단위 노이즈 철저히 배제 (k9, kg, ton, pe 등)
         # 예: k9(주), (주)pe
         lower_name = full_name.lower().replace(' ', '')
-        unit_noise = ['k9', 'kg', 'ton', 'pe', 'm3']
+        unit_noise = KEYWORDS['UNIT_NOISE']
         if any(u in lower_name for u in unit_noise): return False
         
         # 너무 긴 경우 (문장일 확률 높음)
@@ -577,9 +575,8 @@ class HeuristicValueFinder:
                     if re.match(r'^[\d\.-]+$', core_content): continue
                     
                     # [Fix] 주소/전화번호/품목 혼입 방지 (Sample 03, 04, 10, 11)
-                    stoppers = ['경기도', '서울', '인천', '충남', '충북', '전남', '전북', '경남', '경북', '강원', 
-                                '제주', '세종', '광주', '대전', '대구', '부산', '울산',
-                                'TEL', 'FAX', 'HP', '전화', '주소', '포승', '팔탄', '품목', '품명']
+                    # [Fix] 주소/전화번호/품목 혼입 방지 (Sample 03, 04, 10, 11)
+                    stoppers = KEYWORDS['ISSUER_STOPPERS']
                     
                     has_garbage = False
                     cand_upper_nospace = cand.upper().replace(" ", "")
@@ -587,7 +584,7 @@ class HeuristicValueFinder:
                     for stopper in stoppers:
                         s_clean = stopper.replace(" ", "")
                         if s_clean in cand_upper_nospace:
-                            core_match = re.match(r'(\(주\)\s*[가-힣A-Za-z0-9 ]+)|([가-힣A-Za-z0-9 ]+\s*\(주\))', cand)
+                            core_match = re.match(PATTERNS['ISSUER']['CORP_ANY'], cand)
                             if core_match:
                                 cleaned = core_match.group(0).strip()
                                 # 잘린 부분이 stopper를 포함하지 않는지 재확인
@@ -631,9 +628,9 @@ class HeuristicValueFinder:
         # [Fix] finditer 사용하여 차량번호(No. 0580) 등에 막혀서 진짜 ID(계량횟수 0022)를 못 찾는 현상 방지
         # [Fix] 세미콜론(;) 구분자 추가
         # [Fix] 길이 12 -> 18 확장
-        matches = re.finditer(r'(N[O0]\.?|전\s*표(?:번\s*호)?|티\s*켓|계\s*량\s*(?:번\s*호|횟\s*수|회\s*수)|ID[-\s]*N[O0]|번\s*호:?|일\s*련\s*번\s*호)\s*[:：\.;,]?\s*([A-Z0-9-]{1,18})', text, re.IGNORECASE)
+        matches = re.finditer(PATTERNS['TICKET_ID']['LABEL'], text, re.IGNORECASE)
         
-        explicit_labels = ['ID-NO', '계량번', '계량횟', '계량회', '전표', 'TICKET', 'SLIP', 'ID', '번호', '일련번호']
+        explicit_labels = KEYWORDS['TICKET_LABELS']
         
         best_val = None
         for label_match in matches:
@@ -642,7 +639,7 @@ class HeuristicValueFinder:
             val = label_match.group(2).strip().replace('o', '0').replace('O', '0').replace('B', '8')
             
             # [Fix] 라벨 자체가 값으로 잡히는 경우 제외
-            if val.upper() in ['NO', 'ID', 'TEL', 'FAX', 'DATE', 'N0']: continue
+            if val.upper() in KEYWORDS['LABEL_NOISE']: continue
 
             # 차량번호 제외 (차량번호와 겹칠 수 있음)
             if vehicle_num:
@@ -699,9 +696,10 @@ class HeuristicValueFinder:
 
     def extract_product(self, text: str) -> Optional[str]:
         """품명(Product) 추출"""
+    def extract_product(self, text: str) -> Optional[str]:
+        """품명(Product) 추출"""
         # [Fix] 영문/숫자 혼용 허용 (플라스틱 PE 등), 제 품 추가, stopper 강화
-        pattern = r'(품\s*명|품\s*면|제\s*품\s*명|제\s*품|품\s*목|품\s*\.+\s*목)\s*[:;：]?\s*([가-힣A-Za-z0-9 ]+?)(?=\s*(?:\(|구분|입고|출고|날짜|차량|발행|총중량|실중량|공차중량|ID-NO)|[:：\n]|$)'
-        match = re.search(pattern, text)
+        match = re.search(PATTERNS['PRODUCT'], text)
         if match:
             val = match.group(2).strip()
             # "총 중 량" 등이 잡히는 것 방지
@@ -720,7 +718,7 @@ class HeuristicValueFinder:
         """구분(Type, 입고/출고) 추출"""
         # [Fix] 입 고, 출 고 등 공백 허용
         # 1. 라벨 기반 추출
-        match = re.search(r'(구\s*분|구\s*문)\s*[:;：]?\s*([가-힣 ]+)', text)
+        match = re.search(PATTERNS['TYPE']['LABEL'], text)
         if match:
             val = match.group(2).strip().replace(" ", "")
             if '입고' in val: return '입고'
@@ -728,7 +726,7 @@ class HeuristicValueFinder:
             
         # 2. Standalone 키워드 (보수적)
         # [Fix] 공백 포함 입 고, 출 고 검색
-        if re.search(r'입\s*고', text) and not re.search(r'출\s*고', text): return '입고'
-        if re.search(r'출\s*고', text) and not re.search(r'입\s*고', text): return '출고'
+        if re.search(PATTERNS['TYPE']['IN'], text) and not re.search(PATTERNS['TYPE']['OUT'], text): return '입고'
+        if re.search(PATTERNS['TYPE']['OUT'], text) and not re.search(PATTERNS['TYPE']['IN'], text): return '출고'
             
         return None

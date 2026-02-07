@@ -1,8 +1,9 @@
 import re
 from typing import List, Dict, Any, Optional
 from .common import WordBox
-from .config import CONSTANTS, KEYWORDS
+from .config import CONSTANTS, KEYWORDS, NOISE_KEYWORDS, LABEL_CONFIG
 from .base import BaseExtractor
+from rapidfuzz import fuzz
 
 class WeightExtractor(BaseExtractor):
     """중량 전문 추출기 (UnifiedWrapper)"""
@@ -113,26 +114,85 @@ class CompanyExtractor(BaseExtractor):
 
     def _is_label_noise(self, text: str) -> bool:
         """텍스트가 '품명', '제품', '구분', '날짜' 등 다른 라벨인지 확인"""
-        noise_keywords = ["품명", "제품", "구분", "날짜", "시간", "중량", "차량", "전표", "계량"]
         clean = text.replace(" ", "").replace(":", "").replace(".", "")
-        if clean in noise_keywords:
+        # 일부 키워드는 Truncate 용도와 겹치므로 config 공유 또는 별도 정의
+        # 여기서는 COMPANY_TRAILING 을 재사용하되, 일부는 제외할 수도 있음.
+        # 편의상 COMPANY_TRAILING을 사용 (대부분의 라벨이 포함됨)
+        if clean in NOISE_KEYWORDS['COMPANY_TRAILING']:
             return True
         # "품명:" 같은 경우 처리
-        if any(clean.startswith(k) and len(clean) <= len(k)+1 for k in noise_keywords):
+        if any(clean.startswith(k) and len(clean) <= len(k)+1 for k in NOISE_KEYWORDS['COMPANY_TRAILING']):
             return True
         return False
         
     def _clean_trailing_label(self, text: str) -> str:
-        """값 뒤에 붙은 다음 필드 라벨(품명 등) 제거"""
-        noise_keywords = ["품명", "제품", "구분", "날짜", "시간", "중량", "차량", "전표", "계량", "발행"]
-        for k in noise_keywords:
-            if text.endswith(k):
-                return text[:-len(k)].strip()
+        """값 뒤에 붙은 다음 필드 라벨(품명 등) 제거 (Fuzzy Matching)"""
+        if not text: return text
+        
+        # 1. 검사할 라벨 후보 수집 (Config 기반 Dynamic)
+        target_labels = set()
+        for field, config in LABEL_CONFIG.items():
+            if field in ['company', 'issuer', 'vehicle']: continue 
+            target_labels.update(config.get('canonical', []))
+            target_labels.update(config.get('variants', []))
+            target_labels.update(config.get('keywords', []))
+            
+        # 추가 노이즈 키워드
+        target_labels.update(NOISE_KEYWORDS.get('COMPANY_TRAILING', []))
+        
+        # 짧은 키워드 제거 (오탐 방지)
+        sorted_labels = sorted([t for t in target_labels if len(t) >= 2], key=len, reverse=True)
+
+        # 2. Exact Match (Keyword in Text) - 우선 수행
+        for k in sorted_labels:
             if k in text:
-                 # "고요환경품명" -> "고요환경" (보수적 접근: 라벨이 뒤쪽에 있을 때만)
-                 idx = text.find(k)
-                 if idx > 0 and idx + len(k) == len(text):
+                idx = text.find(k)
+                if idx > 0:
                      return text[:idx].strip()
+
+        # 3. Fuzzy Suffix Match
+        # 텍스트 끝부분이 라벨과 유사한지 검사 ("품랑", "제퓸" 등)
+        # 마지막 2~4글자 검사
+        n = len(text)
+        for length in range(2, 5):
+            if n < length: continue
+            suffix = text[n-length:]
+            
+            # 너무 짧은 suffix는 검사 스킵
+            if len(suffix) < 2: continue
+            
+            for label in sorted_labels:
+                # 길이 차이가 크면 스킵
+                if abs(len(label) - len(suffix)) > 1: continue
+                
+                # 유사도 검사 (80점 이상)
+                # "품랑" vs "품명" -> 50점 (fuzz.ratio) -> 안됨
+                # "제퓸" vs "제품" -> 50점 -> 안됨
+                # 한국어 오타는 자모 단위 분해가 아니면 fuzz.ratio가 낮게 나옴.
+                # 하지만 "제품명" vs "제퓸명" -> 66점
+                
+                # 대안: Character Set Overlap 검사 (간단한 오타)
+                # "품랑" vs "품명" -> '품' 일치.
+                # 그냥 1글자만 다르고 나머지는 같은 경우 (Levenshtein Distance = 1)
+                
+                dist = fuzz.ratio(suffix, label)
+                
+                # Levenshtein Distance가 1 이하인 경우 (글자수 비슷할때)
+                # rapidfuzz.distance.Levenshtein.distance 사용 권장되지만, 
+                # 여기서는 fuzz.ratio가 100이 아니더라도, 
+                # 글자 하나만 틀린 경우를 잡고 싶음.
+                
+                # 2글자 단어에서 1글자 틀리면 50점.
+                # 3글자 단어에서 1글자 틀리면 66점.
+                threshold = 0
+                if len(label) == 2: threshold = 49 # 1글자만 맞아도.. (위험하긴 함 "품종" vs "품명") -> "품"이 같으면?
+                elif len(label) >= 3: threshold = 60
+                
+                if dist > threshold:
+                     # 추가 검증: 첫 글자가 같은가? (한국어 라벨은 보통 첫글자가 중요)
+                     if suffix[0] == label[0]:
+                         return text[:n-length].strip()
+                         
         return text
 
 
@@ -273,9 +333,8 @@ class ProductExtractor(BaseExtractor):
         # 1. [Fix] Next Field Label 제거 (Context-aware truncation)
         # "국판구분출" -> "국판" ("구분"부터 잘라냄), "폐지 입고" -> "폐지"
         # 공백이 섞여있어도 동작하도록 (구 분, 구  분)
-        next_labels = ["구분", "입고", "출고", "수량", "중량", "비고", "차량", "전표", "단가", "금액", "확인"]
         
-        for label in next_labels:
+        for label in NOISE_KEYWORDS['PRODUCT_NEXT_LABELS']:
             # 글자 사이 공백 유연하게 허용하는 패턴 생성 (예: 구\s*분)
             pattern = r"\s*".join(list(label))
             
