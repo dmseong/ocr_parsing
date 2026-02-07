@@ -29,7 +29,7 @@
 > **💡 노이즈 보정**: `k9` → `kg`, `O` → `0`, `B` → `8` 등 OCR 오인식 패턴을 정규식으로 강력하게 보정합니다.
 
 #### 2. SpatialValueExtractor (공간 분석)
-텍스트의 의미가 아닌, **좌표(Coordinate)**를 기반으로 데이터를 찾습니다.
+텍스트의 의미가 아닌, **좌표(Coordinate)** 를 기반으로 데이터를 찾습니다.
 - **원리**: 라벨(Key)의 좌표 `(x_max, y_min)` 등을 기준으로 **우측** 또는 **하단**에 위치한 단어들을 검색합니다.
 - **가중치**: 같은 라인(Y축 차이 15px 이내)에 있는 단어에 높은 점수를 부여하여 줄바꿈된 텍스트보다 우선순위를 높입니다.
 
@@ -46,7 +46,7 @@
 | `core.py` | `SmartFieldExtractor` | 전체 추출 프로세스를 총괄하는 **Control Tower**. 개별 추출기를 호출하고, 상호 의존성(Company-Issuer)을 조율하며, 최종 신뢰도를 계산합니다. |
 | `weight_engine.py` | `UnifiedWeightEngine` | **중량(Total/Tare/Net)** 전문 추출 엔진. 3중 앙상블(Equation, Spatial, Proximity) 전략과 단위(ton/kg) 자동 보정 로직을 포함합니다. |
 | `field_extractors.py` | `DateExtractor` 등 | 중량을 제외한 나머지 필드(날짜, 차량번호, 상호, 전표번호 등)의 개별 추출 로직이 모여 있습니다. |
-| `spatial_extractor.py` | `SpatialValueExtractor` | 텍스트의 의미가 아닌 **좌표(Coordinate)**를 기반으로 값을 찾는 핵심 모듈. 라벨의 우측/하단 영역을 분석합니다. |
+| `spatial_extractor.py` | `SpatialValueExtractor` | 텍스트의 의미가 아닌 **좌표(Coordinate)** 를 기반으로 값을 찾는 핵심 모듈. 라벨의 우측/하단 영역을 분석합니다. |
 | `normalizer.py` | `AdvancedNoiseNormalizer` | OCR 오인식(오타, 노이즈, 특수문자)을 문맥에 맞게 교정합니다. (예: `O`->`0`, `즁량`->`중량`) |
 | `label_detector.py` | `SmartLabelDetector` | Fuzzy Matching(Levenshtein Distance)을 사용하여 오타가 포함된 라벨 키워드를 찾아냅니다. |
 
@@ -119,7 +119,7 @@ class WordBox:
 
 ## 4. 💡 결론 및 활용 가이드
 
-이 시스템은 단순한 텍스트 매칭이 아닌, **공간(위치)**과 **문맥(Context)**, 그리고 **도메인 지식(중량 공식 등)**을 결합하여 작동합니다.
+이 시스템은 단순한 텍스트 매칭이 아닌, **공간(위치)** 과 **문맥(Context)** , 그리고 **도메인 지식(중량 공식 등)** 을 결합하여 작동합니다.
 
 - **데이터가 잘 안 뽑힌다면?**
     - `extractors/` 내의 해당 필드 추출기 로직을 확인하세요.
@@ -129,7 +129,7 @@ class WordBox:
 ## 5. 🏛️ 설계 철학 및 트레이드오프 (Design Principles & Trade-offs)
 
 ### (1) 동작 원리 (Operating Principles)
-본 시스템은 **"확률적 추론(Probabilistic Inference)"**이 아닌 **"결정론적 규칙(Deterministic Rules)의 계층적 적용"**을 따릅니다.
+본 시스템은 **"확률적 추론(Probabilistic Inference)"** 이 아닌 **"결정론적 규칙(Deterministic Rules)의 계층적 적용"** 을 따릅니다.
 1. **Level 1 (Strong Rules)**: 명확한 좌표나 키워드가 있으면 그것을 1순위로 신뢰합니다. (예: "차량번호" 라벨 바로 옆의 숫자)
 2. **Level 2 (Weak Rules)**: 명확한 증거가 없을 때, 패턴(Regex)이나 공간적 관습(문서 하단은 발행처)을 따릅니다.
 3. **Level 3 (Fallback)**: 모든 규칙이 실패하면 최소한의 포맷 매칭(날짜 형태 등)이라도 시도합니다.
