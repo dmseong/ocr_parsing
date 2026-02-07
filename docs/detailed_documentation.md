@@ -97,6 +97,24 @@ class WordBox:
 - **데이터가 잘 안 뽑힌다면?**
     - `extractors/` 내의 해당 필드 추출기 로직을 확인하세요.
     - 특히 `SpatialValueExtractor`의 거리 임계값(Threshold) 조절이 필요할 수 있습니다.
-- **점수가 너무 낮게 나온다면?**
-    - `confidence_scorer.py`의 감점 규칙(Rule)이 너무 엄격한지 확인해 보세요.
-    - 입력 이미지의 품질(기울어짐, 흐릿함)이 원인일 수도 있습니다.
+---
+
+## 5. 🏛️ 설계 철학 및 트레이드오프 (Design Principles & Trade-offs)
+
+### (1) 동작 원리 (Operating Principles)
+본 시스템은 **"확률적 추론(Probabilistic Inference)"**이 아닌 **"결정론적 규칙(Deterministic Rules)의 계층적 적용"**을 따릅니다.
+1. **Level 1 (Strong Rules)**: 명확한 좌표나 키워드가 있으면 그것을 1순위로 신뢰합니다. (예: "차량번호" 라벨 바로 옆의 숫자)
+2. **Level 2 (Weak Rules)**: 명확한 증거가 없을 때, 패턴(Regex)이나 공간적 관습(문서 하단은 발행처)을 따릅니다.
+3. **Level 3 (Fallback)**: 모든 규칙이 실패하면 최소한의 포맷 매칭(날짜 형태 등)이라도 시도합니다.
+
+### (2) 설계 의도 (Design Intent)
+- **설명 가능성(Explainability)**: 왜 이 값이 추출되었는지 추적 가능해야 합니다. 이를 위해 모든 추출 결과에 `_methods_used`(사용된 전략)와 `_confidence`(감점 요인)를 남기도록 설계했습니다.
+- **방어적 프로그래밍(Defensive Programming)**: OCR 데이터는 항상 노이즈(오타, 누락)가 있다고 가정합니다. 따라서 `AdvancedNoiseNormalizer`를 통해 입력 데이터를 적극적으로 "소독(Sanitize)"한 후 로직을 태웁니다.
+- **도메인 지식의 코드화**: "총중량은 공차와 실중량의 합이다"라는 현장의 불문율을 `UnifiedWeightEngine`의 방정식 로직으로 구현하여, 숫자 하나가 오인식되더라도 나머지 둘을 통해 복구할 수 있게 했습니다.
+
+### (3) 트레이드오프 (Trade-offs)
+| 선택한 방식 | 포기한 것 | 이유 |
+|---|---|---|
+| **Rule-based System** | 유연성 (Flexibility) | 딥러닝 모델은 학습 데이터가 많이 필요하고, 왜 틀렸는지 설명하기 어렵습니다. 영수증 양식은 정형화되어 있어 규칙 기반이 **유지보수와 디버깅**에 훨씬 유리합니다. |
+| **Strict Validation** | 재현율 (Recall) | 잘못된 값을 추출하느니 차라리 추출하지 않고 사용자에게 경고(Low Confidence)를 주는 것이, **데이터 무결성** 측면에서 안전하다고 판단했습니다. |
+| **Pythonic Processing** | 속도 (Performance) | C++ 등의 고속 연산 대신 Python 객체(WordBox)를 사용하여 개발 생산성을 높였습니다. 영수증 1장 처리는 0.1초 미만이므로 속도는 주된 병목이 아닙니다. |
