@@ -120,7 +120,7 @@ class SmartLabelDetector:
         return results
     
     def _fuzzy_score(self, text1: str, text2: str) -> float:
-        """두 문자열 유사도 계산"""
+        """레벤슈타인 거리 기반 두 문자열 유사도 계산"""
         # 전처리: 공백 및 특수문자 제거, 소문자화
         t1 = re.sub(r'[^가-힣a-zA-Z0-9]', '', text1).lower()
         t2 = re.sub(r'[^가-힣a-zA-Z0-9]', '', text2).lower()

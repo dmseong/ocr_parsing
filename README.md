@@ -34,7 +34,7 @@ python test/test_hybrid.py
 # 정답지(answer.md)와 비교 및 정확도 리포트 생성
 python test/compare_answer.py
 ```
-*결과는 `comparison_report.txt`에 저장됩니다.
+*테스트 결과는 `comparison_report.txt`에 저장됩니다.
 
 ---
 
@@ -49,6 +49,43 @@ python test/compare_answer.py
 - **Custom Engines**:
     - `AdvancedNoiseNormalizer`: OCR 특화 오인식 교정 엔진 (O->0, B->8 등 및 문맥 보정)
     - `UnifiedWeightEngine`: 산술 검증 기반 중량 추출 엔진
+
+---
+
+## 📥 입력 데이터 포맷 (Input Data Format)
+
+본 엔진은 일반적인 OCR 서비스와 호환되는 **표준 JSON 구조**를 입력으로 가정합니다.
+
+### 필수 항목 (Required Fields)
+- **`pages`**: 페이지 단위의 배열 (List)
+- **`words`**: 각 페이지 내의 단어 단위 객체
+- **`text`**: 인식된 텍스트 문자열
+- **`boundingBox`**: 4개의 꼭지점 좌표 (`vertices`: x, y)
+- **`confidence`**: (선택) OCR 엔진의 신뢰도 점수
+
+### JSON 예시 (Sample JSON Structure)
+```json
+{
+  "pages": [
+    {
+      "words": [
+        {
+          "boundingBox": {
+            "vertices": [
+              {"x": 105, "y": 288},
+              {"x": 156, "y": 286},
+              {"x": 156, "y": 308},
+              {"x": 105, "y": 310}
+            ]
+          },
+          "text": "계량",
+          "confidence": 0.98
+        }
+      ]
+    }
+  ]
+}
+```
 
 ---
 
@@ -195,6 +232,9 @@ ocr_parsing
 ├─ requirements.txt       # 의존성 패키지
 └─ comparison_report.txt  # 테스트 결과 리포트
 ```
+
+> **상세 문서**: [📂 상세 분석 보고서 (Detailed Documentation)](docs/detailed_documentation.md)  
+> `extractors/` 모듈, `confidence_score`, `boundingBox` 등 핵심 로직에 대한 상세 설명이 포함되어 있습니다.
 
 ---
 

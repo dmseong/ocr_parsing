@@ -42,7 +42,7 @@
 
 ### 2. 파싱 로직 분석
 
-[parsing.py:L121-L125](file:///c:/Users/2with/OneDrive/Desktop/assign/other/reco/parsing.py#L121-L125)에서 `NET_WEIGHT_LABEL` 매칭 시:
+parsing.py:L121-L125에서 `NET_WEIGHT_LABEL` 매칭 시:
 
 ```python
 elif string_id == "NET_WEIGHT_LABEL" and not extracted["net_weight"]:
@@ -53,7 +53,7 @@ elif string_id == "NET_WEIGHT_LABEL" and not extracted["net_weight"]:
 ```
 
 **문제점**: 
-- `NET_WEIGHT_LABEL` 패턴에 단순 `{"TEXT": "중량"}` 패턴이 포함되어 있음 ([L51](file:///c:/Users/2with/OneDrive/Desktop/assign/other/reco/parsing.py#L51))
+- `NET_WEIGHT_LABEL` 패턴에 단순 `{"TEXT": "중량"}` 패턴이 포함되어 있음 (L51)
 - 이로 인해 **"총중량"의 "중량" 부분이 먼저 매칭됨**
 - `extracted["net_weight"]`가 총중량 값으로 먼저 채워지면, 실제 "실중량" 레이블이 나중에 매칭되어도 `not extracted["net_weight"]` 조건 때문에 무시됨
 
