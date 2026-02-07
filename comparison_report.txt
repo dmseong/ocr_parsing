@@ -10,6 +10,8 @@ sample_01                 | product         | None                 | None       
 sample_01                 | type            | None                 | None                 | ✅
 sample_01                 | ticket_id       | None                 | 0016                 | ❌
 sample_01                 | issuer          | 동우바이오(주)             | 동우바이오(주)             | ✅
+sample_01                 | gps             | {'latitude': 37.105317, 'longitude': 127.375673} | 37.105317, 127.375673 | ✅
+sample_01                 | phone           | None                 | None                 | ✅
 sample_02                 | date            | 2026-02-02           | 2026-02-02           | ✅
 sample_02                 | vehicle_num     | 80구8713              | 80구8713              | ✅
 sample_02                 | total_weight    | 13460                | 13460                | ✅
@@ -20,6 +22,8 @@ sample_02                 | product         | 식물                   | 식물 
 sample_02                 | type            | 입고                   | 입고                   | ✅
 sample_02                 | ticket_id       | 010889               | 010889               | ✅
 sample_02                 | issuer          | 장원C&S                | 장원C&S                | ✅
+sample_02                 | gps             | {'latitude': 37.718114, 'longitude': 126.84494} | 37.718114, 126.84494 | ✅
+sample_02                 | phone           | None                 | None                 | ✅
 sample_03                 | date            | 2026-02-01           | 2026-02-01           | ✅
 sample_03                 | vehicle_num     | 5405                 | 5405                 | ✅
 sample_03                 | total_weight    | 14080                | 14080                | ✅
@@ -30,6 +34,8 @@ sample_03                 | product         | None                 | None       
 sample_03                 | type            | 입고                   | 입고                   | ✅
 sample_03                 | ticket_id       | None                 | 5                    | ❌
 sample_03                 | issuer          | 정우리사이클링 (주)          | 정우리사이클링(주)           | ✅
+sample_03                 | gps             | None                 | None                 | ✅
+sample_03                 | phone           | 031-354-7778         | 031-354-7778         | ✅
 sample_04                 | date            | 2025-12-01           | 2025-12-01           | ✅
 sample_04                 | vehicle_num     | 0580                 | 0580                 | ✅
 sample_04                 | total_weight    | 14230                | 14230                | ✅
@@ -40,6 +46,8 @@ sample_04                 | product         | 국판                   | 국판 
 sample_04                 | type            | 입고                   | 입고                   | ✅
 sample_04                 | ticket_id       | 0022                 | 0022                 | ✅
 sample_04                 | issuer          | (주) 하은펄프             | (주)하은펄프              | ✅
+sample_04                 | gps             | None                 | None                 | ✅
+sample_04                 | phone           | (031)359-9127        | 031-359-9127         | ✅
 sample_05_noisy           | date            | 2026-02-03           | 2026-02-03           | ✅
 sample_05_noisy           | vehicle_num     | 12가3458              | 12가3458              | ✅
 sample_05_noisy           | total_weight    | 23480                | 23480                | ✅
@@ -50,6 +58,8 @@ sample_05_noisy           | product         | 고철                   | 고철 
 sample_05_noisy           | type            | 출고                   | 출고                   | ✅
 sample_05_noisy           | ticket_id       | None                 | None                 | ✅
 sample_05_noisy           | issuer          | (주)한국자원              | (주)한국자원              | ✅
+sample_05_noisy           | gps             | {'latitude': 37.234587, 'longitude': 127.123487} | 37.234587, 127.123487 | ✅
+sample_05_noisy           | phone           | None                 | None                 | ✅
 sample_06_noisy           | date            | 2026-01-15           | 2026-01-15           | ✅
 sample_06_noisy           | vehicle_num     | 91구1234              | 91구1234              | ✅
 sample_06_noisy           | total_weight    | 31880                | 31880                | ✅
@@ -60,6 +70,8 @@ sample_06_noisy           | product         | 폐지                   | 폐지 
 sample_06_noisy           | type            | 입고                   | 입고                   | ✅
 sample_06_noisy           | ticket_id       | 023487               | 023487               | ✅
 sample_06_noisy           | issuer          | 그린환경(주)              | 그린환경(주)              | ✅
+sample_06_noisy           | gps             | {'latitude': 36.87654, 'longitude': 126.54321} | 36.87654, 126.54321  | ✅
+sample_06_noisy           | phone           | None                 | None                 | ✅
 sample_07_noisy           | date            | 2026-02-05           | 2026-02-05           | ✅
 sample_07_noisy           | vehicle_num     | 56바7890              | 56바7890              | ✅
 sample_07_noisy           | total_weight    | 45670                | 45670                | ✅
@@ -70,6 +82,8 @@ sample_07_noisy           | product         | 플라스틱 PE              | 플
 sample_07_noisy           | type            | None                 | None                 | ✅
 sample_07_noisy           | ticket_id       | None                 | None                 | ✅
 sample_07_noisy           | issuer          | (주)클린테크              | (주)클린테크              | ✅
+sample_07_noisy           | gps             | {'latitude': 35.548213, 'longitude': 129.314567} | 35.548213, 129.314567 | ✅
+sample_07_noisy           | phone           | None                 | None                 | ✅
 sample_08_english         | date            | 2025-10-20           | 2025-10-20           | ✅
 sample_08_english         | vehicle_num     | AB-1234              | AB-1234              | ✅
 sample_08_english         | total_weight    | 25400                | 25400                | ✅
@@ -80,6 +94,8 @@ sample_08_english         | product         | None                 | None       
 sample_08_english         | type            | None                 | None                 | ✅
 sample_08_english         | ticket_id       | None                 | None                 | ✅
 sample_08_english         | issuer          | Supplier : Global Resources Inc. | Global Resources Inc. | ✅
+sample_08_english         | gps             | None                 | None                 | ✅
+sample_08_english         | phone           | None                 | None                 | ✅
 sample_09_unit_confusion  | date            | 2025-12-25           | 2025-12-25           | ✅
 sample_09_unit_confusion  | vehicle_num     | 경기99바1234            | 경기99바1234            | ✅
 sample_09_unit_confusion  | total_weight    | 24500                | 24500                | ✅
@@ -90,6 +106,8 @@ sample_09_unit_confusion  | product         | None                 | None       
 sample_09_unit_confusion  | type            | None                 | None                 | ✅
 sample_09_unit_confusion  | ticket_id       | None                 | None                 | ✅
 sample_09_unit_confusion  | issuer          | None                 | None                 | ✅
+sample_09_unit_confusion  | gps             | None                 | None                 | ✅
+sample_09_unit_confusion  | phone           | None                 | None                 | ✅
 sample_10_extreme_noise   | date            | None                 | None                 | ✅
 sample_10_extreme_noise   | vehicle_num     | 8713                 | 8713                 | ✅
 sample_10_extreme_noise   | total_weight    | 12480                | 12480                | ✅
@@ -100,6 +118,7 @@ sample_10_extreme_noise   | product         | None                 | None       
 sample_10_extreme_noise   | type            | None                 | None                 | ✅
 sample_10_extreme_noise   | ticket_id       | None                 | 8713                 | ❌
 sample_10_extreme_noise   | issuer          | None                 | None                 | ✅
+sample_10_extreme_noise   | phone           | 031-1234-5678        | 031-1234-5678        | ✅
 sample_11                 | date            | 2026-02-06           | 2026-02-06           | ✅
 sample_11                 | vehicle_num     | 98바1234              | 98바1234              | ✅
 sample_11                 | total_weight    | 25000                | 25000                | ✅
@@ -110,5 +129,7 @@ sample_11                 | product         | 혼합폐기물                | �
 sample_11                 | type            | None                 | None                 | ✅
 sample_11                 | ticket_id       | 26-0206-003          | 26-0206-003          | ✅
 sample_11                 | issuer          | None                 | None                 | ✅
+sample_11                 | gps             | None                 | None                 | ✅
+sample_11                 | phone           | None                 | None                 | ✅
 -----------------------------------------------------------------------------------------------
-Total Match Rate: 107/110 (97.27%)
+Total Match Rate: 128/131 (97.71%)

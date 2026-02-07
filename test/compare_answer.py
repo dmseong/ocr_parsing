@@ -78,7 +78,7 @@ def compare():
             continue
             
         answer = answers[sample_name]
-        target_fields = ['date', 'vehicle_num', 'total_weight', 'tare_weight', 'net_weight', 'company', 'product', 'type', 'ticket_id', 'issuer']
+        target_fields = ['date', 'vehicle_num', 'total_weight', 'tare_weight', 'net_weight', 'company', 'product', 'type', 'ticket_id', 'issuer', 'gps', 'phone']
         
         for field in target_fields:
             if field not in answer: continue
@@ -88,10 +88,14 @@ def compare():
             
             def normalize(v):
                 if v is None: return "None"
-                # Remove spaces, parentheses, commas, colons, and periods, and convert to lower
-                res = str(v).replace(" ", "").replace("(", "").replace(")", "").replace(",", "").replace(":", "").replace(".", "").lower()
+                # Handle GPS dict
+                if isinstance(v, dict) and 'latitude' in v:
+                    v = f"{v['latitude']}{v['longitude']}"
+                
+                # Remove spaces, parentheses, commas, colons, dots, and hyphens, and convert to lower
+                res = str(v).replace(" ", "").replace("(", "").replace(")", "").replace(",", "").replace(":", "").replace(".", "").replace("-", "").lower()
                 if res.startswith("supplier"): res = res[len("supplier"):]
-                if res == "-" or not res: return "None"
+                if res == "none" or not res: return "None"
                 return res
 
             s_res = normalize(res_val)
