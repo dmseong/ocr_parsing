@@ -69,9 +69,86 @@ class CompanyExtractor(BaseExtractor):
                  # [Fix] Spatial 추출 결과에 대해서도 Heuristic 정제 적용 (Sample 03 노이즈 제거)
                  refined = self.heuristic_finder.extract_company(value)
                  if refined: return refined
-                 return value
+                 # [Fix] Fallback: 공백 및 점 제거 (Sample 11)
+                 return value.strip().replace(" ", "").replace("..", "").replace("...", "")
             
         # 전략 2: 특정 키워드 패턴 (귀하 등)
+        for i, word in enumerate(word_boxes):
+            if "귀하" in word.text and i > 0:
+                return word_boxes[i-1].text.strip()
+                
+        # 전략 3: 휴리스틱 정규식
+        full_text = self.get_full_text(word_boxes)
+        val = self.heuristic_finder.extract_company(full_text)
+        
+        # [New] 공간 검증 (Issuer 위치 오탐 방지)
+        if val:
+             if self._validate_heuristic_location(val, word_boxes):
+                 return val
+             
+        return None
+
+    def _validate_heuristic_location(self, value: str, word_boxes: List[WordBox]) -> bool:
+        """Heuristic으로 찾은 Company 값이 공간적으로 타당한지 검증"""
+        if not value or not word_boxes: return True
+        
+        # 핵심 키워드 추출 ((주) 등 제외)
+        core = value.replace("(주)", "").replace(" ", "").strip()
+        if len(core) < 2: return True
+        
+        # 텍스트 위치 찾기
+        candidates = []
+        for w in word_boxes:
+            w_clean = w.text.replace(" ", "")
+            if core in w_clean:
+                candidates.append(w)
+        
+        if not candidates: return True
+        
+        # 문서 하단 55% 이하에만 위치하면 Reject (보통 Company는 상단, Issuer는 하단)
+        max_y = max(w.y_max for w in word_boxes)
+        bottom_threshold = max_y * 0.55
+        
+        if all(w.centroid[1] > bottom_threshold for w in candidates):
+            return False
+            
+        return True
+
+class TicketIdExtractor(BaseExtractor):
+    def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
+        vehicle_num = kwargs.get('vehicle_num')
+        full_text = self.get_full_text(word_boxes)
+        
+        # [Fix] Normalizer 적용하여 "일 련 번 호" -> "일련번호" 변환
+        norm_text = self.normalizer.normalize(full_text, 'label')
+        
+        return self.heuristic_finder.find_ticket_id_in_text(norm_text, vehicle_num=vehicle_num)
+# ... (중략) ...
+
+    def _expand_issuer_name(self, anchor: WordBox, word_boxes: List[WordBox]) -> str:
+        if not anchor: return ""
+        # ... (생략: 기존 코드)
+        combined = " ".join(w.text for w in line_words[start_idx : end_idx + 1]).strip()
+        combined = re.sub(r'(전화|TEL|FAX).*$', '', combined, flags=re.IGNORECASE)
+        combined = re.sub(r'[\d-]{9,}', '', combined).strip()
+        combined = re.sub(r'(?<=[가-힣])\s+(?=[가-힣])', '', combined)
+        
+        # [Fix] 접두어(업체명, 상호 등)가 포함된 경우 제거 (Sample 11)
+        combined = re.sub(r'^(업\s*체\s*명|상\s*호|공\s*급\s*자|성\s*명)\s*[:;]?\s*', '', combined).strip()
+        
+        return combined
+
+# ... (중략) ...
+
+class TicketIdExtractor(BaseExtractor):
+    def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
+        vehicle_num = kwargs.get('vehicle_num')
+        full_text = self.get_full_text(word_boxes)
+        
+        # [Fix] Normalizer 적용하여 "일 련 번 호" -> "일련번호" 변환
+        norm_text = self.normalizer.normalize(full_text, 'label')
+        
+        return self.heuristic_finder.find_ticket_id_in_text(norm_text, vehicle_num=vehicle_num)
         for i, word in enumerate(word_boxes):
             if "귀하" in word.text and i > 0:
                 return word_boxes[i-1].text.strip()

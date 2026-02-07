@@ -156,20 +156,25 @@ class HeuristicValueFinder:
             'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
         }
         
-        mon_match = re.search(r'(\d{4})[-/\.\s]+([A-Za-z]{3})[-/\.\s]+(\d{1,2})', text)
+        # [Fix] .. 포함 패턴 (2O26. 02.. 06)
+        # 1. 텍스트 자체에서 ..을 .으로 치환
+        text_norm = text.replace("..", ".").replace("...", ".")
+        
+        mon_match = re.search(r'(\d{4})[-/\.\s]+([A-Za-z]{3})[-/\.\s]+(\d{1,2})', text_norm)
         if mon_match:
             y, m_str, d = mon_match.groups()
             m = month_map.get(m_str.capitalize())
             if m: return f"{y}-{m}-{d.zfill(2)}"
         
-        dot_match = re.search(r'(\d{2,4})[\.\-/]\s*(\d{1,2})[\.\-/]\s*(\d{1,2})', text)
+        dot_match = re.search(r'(\d{2,4})[\.\-/]\s*(\d{1,2})[\.\-/]\s*(\d{1,2})', text_norm)
         if dot_match:
             y, m, d = dot_match.groups()
             if len(y) == 2: y = "20" + y
             return f"{y}-{m.zfill(2)}-{d.zfill(2)}"
+        
         # Noisy Date Pattern (e.g., 2026, 02. 01, 2O26-O2-O3)
         # 1. 먼저 숫자 오인식 보정
-        clean_text = self._normalize_ocr_digits(text)
+        clean_text = self._normalize_ocr_digits(text_norm)
         
         # 2. 보정된 텍스트에서 검색
         noisy_match = re.search(r'(\d{4})\s*[,.\-/]\s*(\d{1,2})\s*[,.\-/]\s*(\d{1,2})', clean_text)
@@ -454,13 +459,14 @@ class HeuristicValueFinder:
 
     def extract_company(self, text: str) -> Optional[str]:
         """회사명 추출 (Heuristic)"""
-        # 1. 명시적 라벨
-        # 상호: 청정그린, 거래처: 대한리싸이클 등
+        # [Fix] .. 제거 (전처리)
+        text = text.replace("..", "").replace("...", "")
+        
         # 1. 명시적 라벨
         # 상호: 청정그린, 거래처: 대한리싸이클 등
         # [Fix] 샹호(상호 오타) 추가 및 공백 허용 (거 래 처)
         # 예: "거 래 처 : 대한리싸이클"
-        match = re.search(r'(상\s*호|샹\s*호|성\s*명|거\s*래\s*처|공\s*급\s*자|공\s*급\s*받\s*는\s*자)\s*[:;：]?\s*([가-힣\(\)A-Z0-9 ]+)', text)
+        match = re.search(r'(상\s*호|샹\s*호|성\s*명|거\s*래\s*처|공\s*급\s*자|공\s*급\s*받\s*는\s*자|업\s*체\s*명)\s*[:;：]?\s*([가-힣\(\)A-Z0-9 ]+)', text)
         if match:
             val = match.group(2).strip()
             # 노이즈 제거: 전화, TEL 등 추가
@@ -469,6 +475,10 @@ class HeuristicValueFinder:
                 if stopper in val:
                     val = val.split(stopper)[0]
             val = val.strip()
+            
+            # [Fix] 회사명 내부 공백 제거 (태..양 건 설 -> 태양건설)
+            val = val.replace(" ", "")
+            
             if len(val) >= 2: return val
             
         # 2. 귀하 패턴
@@ -504,7 +514,14 @@ class HeuristicValueFinder:
         matches_prefix = re.finditer(r'\(주\)\s*([가-힣A-Za-z0-9 ]+)', text)
         for m in matches_prefix:
             name = m.group(1).strip()
+            
+            # [Fix] Stoppers 적용 (전화번호 등이 붙어있는 경우 잘라내기)
+            stoppers = ['전화', 'TEL', 'FAX', 'HP', '주소']
+            for s in stoppers:
+                if s in name: name = name.split(s)[0].strip()
+            
             val = f"(주){name}"
+            val = val.replace(" ", "") # 내부 공백 제거
             
             # 숫자만 있거나, 날짜 패턴(202x)인 경우 제외 (Sample 01 이슈)
             if re.match(r'^[\d\s-]+$', name): continue
@@ -536,8 +553,10 @@ class HeuristicValueFinder:
 
     def extract_issuer(self, text: str, company: Optional[str] = None) -> Optional[str]:
         """발행처(Issuer) 추출 (Heuristic)"""
+        # [Fix] .. 제거 (전처리)
+        text = text.replace("..", "").replace("...", "")
+        
         # (주) 포함 패턴 모두 찾기
-        # [Fix] 공백 포함하도록 Regex 수정 (Sample 04 (주) 하 -> (주)하은펄프)
         patterns = [
             r'(\(주\)\s*[가-힣A-Za-z0-9 ]+)',
             r'([가-힣A-Za-z0-9 ]+\s*\(주\))'
@@ -557,10 +576,10 @@ class HeuristicValueFinder:
                     core_content = cand.replace("(주)", "").replace(" ", "")
                     if re.match(r'^[\d\.-]+$', core_content): continue
                     
-                    # [Fix] 주소/전화번호 혼입 방지 (Sample 03, 04, 10)
+                    # [Fix] 주소/전화번호/품목 혼입 방지 (Sample 03, 04, 10, 11)
                     stoppers = ['경기도', '서울', '인천', '충남', '충북', '전남', '전북', '경남', '경북', '강원', 
                                 '제주', '세종', '광주', '대전', '대구', '부산', '울산',
-                                'TEL', 'FAX', 'HP', '전화', '주소', '포승', '팔탄']
+                                'TEL', 'FAX', 'HP', '전화', '주소', '포승', '팔탄', '품목', '품명']
                     
                     has_garbage = False
                     cand_upper_nospace = cand.upper().replace(" ", "")
@@ -568,13 +587,6 @@ class HeuristicValueFinder:
                     for stopper in stoppers:
                         s_clean = stopper.replace(" ", "")
                         if s_clean in cand_upper_nospace:
-                            # 원래 문자열에서 해당 stopper 위치를 찾아서 자름
-                            # 공백 때문에 직접 인덱싱이 어려으므로, 공백 포함 버전을 찾거나 정규식 사용
-                            # 여기서는 stopper 키워드가 포함되면 그냥 해당 라인은 오염된 것으로 보고,
-                            # (주)회사명 부분만 살릴 수 있는지 시도
-                            
-                            # (주) 패턴 다시 추출 (가장 앞부분만)
-                            # [Fix] 공백 포함하도록 수정
                             core_match = re.match(r'(\(주\)\s*[가-힣A-Za-z0-9 ]+)|([가-힣A-Za-z0-9 ]+\s*\(주\))', cand)
                             if core_match:
                                 cleaned = core_match.group(0).strip()
@@ -583,7 +595,6 @@ class HeuristicValueFinder:
                                     cand = cleaned
                                     break
                             
-                            # 살릴 수 없으면 버림
                             has_garbage = True
                             break
                             
@@ -608,11 +619,83 @@ class HeuristicValueFinder:
             # 단, 영어권 Supplier : 경우는 예외적으로 발행처로 인정
             if norm_company and cand.replace(" ", "") == norm_company:
                 if not any(cand.startswith(p) for p in ['Supplier:', 'Supplier :']):
-                    continue
+                     continue
             
-            return cand # 첫 번째 유효한 (주) 패턴을 발행처로 간주
-                
+            return cand
+            
         return None
+
+    def find_ticket_id_in_text(self, text: str, vehicle_num: Optional[str] = None) -> Optional[str]:
+        # 1. 명시적 라벨 패턴 (No, NO., 전표번호 등)
+        # [Fix] 번호, No. 8713, 티켓: 12345 등 지원
+        # [Fix] finditer 사용하여 차량번호(No. 0580) 등에 막혀서 진짜 ID(계량횟수 0022)를 못 찾는 현상 방지
+        # [Fix] 세미콜론(;) 구분자 추가
+        # [Fix] 길이 12 -> 18 확장
+        matches = re.finditer(r'(N[O0]\.?|전\s*표(?:번\s*호)?|티\s*켓|계\s*량\s*(?:번\s*호|횟\s*수|회\s*수)|ID[-\s]*N[O0]|번\s*호:?|일\s*련\s*번\s*호)\s*[:：\.;,]?\s*([A-Z0-9-]{1,18})', text, re.IGNORECASE)
+        
+        explicit_labels = ['ID-NO', '계량번', '계량횟', '계량회', '전표', 'TICKET', 'SLIP', 'ID', '번호', '일련번호']
+        
+        best_val = None
+        for label_match in matches:
+            label_text = label_match.group(1).replace(" ", "").replace(".", "").upper()
+            # [Fix] O->0, B->8 치환 복구 (Sample 06 Ticket ID Noise)
+            val = label_match.group(2).strip().replace('o', '0').replace('O', '0').replace('B', '8')
+            
+            # [Fix] 라벨 자체가 값으로 잡히는 경우 제외
+            if val.upper() in ['NO', 'ID', 'TEL', 'FAX', 'DATE', 'N0']: continue
+
+            # 차량번호 제외 (차량번호와 겹칠 수 있음)
+            if vehicle_num:
+                 v_clean = vehicle_num.replace(" ", "").upper()
+                 val_clean = val.replace(" ", "").upper()
+                 
+                 # 1. 단순 포함 관계 (기존)
+                 if v_clean == val_clean: continue
+                 
+                 # 2. 노이즈 고려한 비교 (B <-> 8, Z <-> 2 등)
+                 # Sample 08: AB-1234 vs A8-1234
+                 def normalize_chars(s):
+                     return s.replace('B', '8').replace('Z', '2').replace('O', '0').replace('I', '1').replace('D', '0')
+                 
+                 if normalize_chars(v_clean) == normalize_chars(val_clean): continue
+                 
+                 # Sample 03: 차량번호 5405, Ticket 5. 
+                 # 5는 5405에 포함됨. 하지만 라벨이 'No' 등으로 명확하면 허용해야 함.
+                 # 따라서 여기서 무조건 continue하지 않고, '라벨 점수'가 높으면 통과시킴.
+
+            # 순수 숫자 4자리 이하는 차량번호 뒷자리일 확률 높음 -> 라벨 없으면 제외
+            # 명시적 라벨이 있으면 허용 (Sample 03 '5', Sample 01 '0016' 대응)
+            is_match_vehicle_partial = False
+            if vehicle_num:
+                 v_clean = vehicle_num.replace(" ", "")
+                 val_clean = val.replace(" ", "")
+                 if val_clean in v_clean: is_match_vehicle_partial = True
+
+            # 라벨 점수 계산
+            score = 0
+            if any(l in label_text for l in explicit_labels):
+                 score += 10
+            
+            # 차량번호 뒷자리 등과 겹치는데 라벨도 없으면 스킵
+            # [Fix] 너무 짧은 숫자(<=2)가 차량번호에 포함되면 라벨 있어도 위험하므로 스킵 (Sample 05 '12' in '12가...' 오탐 방지)
+            if is_match_vehicle_partial:
+                 if len(val) <= 2: continue
+                 if score == 0: continue
+            
+            # 너무 짧은 숫자인데 라벨도 없으면 스킵
+            if re.match(r'^\d{1,4}$', val) and score == 0:
+                 continue
+            
+            # 값 점수
+            if len(val) >= 5: score += 5
+            if '-' in val: score += 5
+            
+            # 우선순위 갱신
+            if best_val is None or score > best_val[0]:
+                best_val = (score, val)
+        
+        return best_val[1] if best_val else None
+
 
     def extract_product(self, text: str) -> Optional[str]:
         """품명(Product) 추출"""

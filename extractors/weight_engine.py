@@ -303,8 +303,13 @@ class UnifiedWeightEngine:
             if re.match(r'^\d{1,2}시$', text) or re.match(r'^\d{1,2}분$', text):
                 continue
             
+            # [Fix] O->0 변환 적용 (25 O00 -> 25 000)
+            text_norm = self._normalize_ocr_digits(text)
+            
             # 숫자 추출
-            digits = re.sub(r'[^\d]', '', text)
+            # .은 유지해야 11. 500 같은거 판단 가능 -> 일단 숫자만 추출해서 합치는 전략1 유지하되
+            # 11.500이 11500이 되도록 . 제거.
+            digits = re.sub(r'[^\d]', '', text_norm)
             if digits and len(digits) >= 1:
                 number_parts.append(digits)
         
@@ -401,7 +406,8 @@ class UnifiedWeightEngine:
 
             # 2. 숫자 파싱 (소수점 고려)
             # [Fix] O, B 등 오인식 보정 적용 후 숫자 추출
-            clean_word_text = self._normalize_ocr_digits(word.text.replace(',', ''))
+            # [Fix] 공백 제거 추가 (25 O00 -> 25000)
+            clean_word_text = self._normalize_ocr_digits(word.text.replace(',', '').replace(' ', ''))
             digits = re.findall(r'\d+\.\d+|\d+', clean_word_text)
             
             for digit_str in digits:

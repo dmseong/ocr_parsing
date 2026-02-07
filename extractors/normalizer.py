@@ -81,17 +81,28 @@ class AdvancedNoiseNormalizer:
         # Unicode 정규화 (NFD → NFC)
         result = unicodedata.normalize('NFC', result)
         
-        # Context별 전략
+        # Context별 전략 (Context별 먼저 처리하고 공통 Char Map 적용 전처리)
         if context == 'number':
+            # 점 반복 노이즈 제거 (문맥에 따라 다름)
+            # 숫자에선 .. 은 보통 1개 이거나, 잘못된 것.
+            # 2026..02..06 -> 2026.02.06
+            result = re.sub(r'\.{2,}', '.', result)
+            # , 전 O (25, O00)
+            result = re.sub(r'(\d),\s*[Oo](\d{2})', r'\1,0\2', result)
             result = self._normalize_number_context(result)
         elif context == 'label':
             # 라벨 매칭을 위해 여러 개의 공백을 하나로 축소
+            # 라벨 내부 점(..) 제거
+            result = re.sub(r'\.{2,}', '', result)
             result = re.sub(r'\s+', ' ', result)
             result = self._normalize_label_context(result)
         
         # 일반 변환 적용
         result = self._apply_char_map(result)
         result = self._apply_pattern_map(result)
+        
+        # [Fix] k9 -> kg (Char map 적용 후에도 남을 수 있음)
+        result = re.sub(r'(?i)\bk9\b', 'kg', result)
         
         return result
     
@@ -108,6 +119,7 @@ class AdvancedNoiseNormalizer:
                 (r'(\d)O(\d)', r'\g<1>0\g<2>'),      # 1O5 → 105
                 (r'(\d)O([,.])', r'\g<1>0\g<2>'),    # 1O,234 → 10,234
                 (r'([,.])OOO', r'\g<1>000'),         # ,OOO → ,000
+                (r'([,.])\s*O00', r'\g<1>000'),      # , O00 → ,000
                 (r'(\d)l(\d)', r'\g<1>1\g<2>'),      # 1l5 → 115
                 (r'(\d)I(\d)', r'\g<1>1\g<2>'),      # 1I5 → 115
                 (r'(\d)B(\d)', r'\g<1>8\g<2>'),      # 1B5 → 185
@@ -118,6 +130,7 @@ class AdvancedNoiseNormalizer:
                 (r'B(\d)', r'8\g<1>'),                # B in start/middle
                 (r'(\d)S', r'\g<1>5'),
                 (r'S(\d)', r'5\g<1>'),
+                (r',,', ',')                         # ,, -> ,
             ]
             
             for pattern, repl in patterns:
@@ -160,6 +173,7 @@ class AdvancedNoiseNormalizer:
         result = re.sub(r'[낱날]\s*[짜좌]', '날짜', result)
         result = re.sub(r'계\s*량\s*일\s*자', '날짜', result)
         result = re.sub(r'차\s*번\s*호', '차량번호', result)
+        result = re.sub(r'일\s*련\s*번\s*호', '일련번호', result)
         
         # 기타
         result = re.sub(r'구\s*분', '구분', result)

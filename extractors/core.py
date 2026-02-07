@@ -1,3 +1,4 @@
+import re
 from typing import List, Dict, Any
 from .common import WordBox
 from .weight_engine import UnifiedWeightEngine
@@ -70,8 +71,30 @@ class SmartFieldExtractor:
         self.issuer_extractor.set_company_for_validation(result['company'])
         result['issuer'] = self.issuer_extractor.extract(word_boxes)
         
+        # [Fix] Supplier가 Company에 잡힌 경우 Issuer로 이동 (Sample 08 대응)
+        if result['company'] and 'Supplier' in result['company']:
+             val = result['company']
+             # "Supplier : Global..." -> "Global..."
+             for prefix in ['Supplier:', 'Supplier :', 'Supplier']:
+                  if val.startswith(prefix):
+                      val = val[len(prefix):].strip()
+             result['issuer'] = val
+             result['company'] = None
+
+        # [Fix] Company 추출 실패 시 Issuer를 Company로 대체 (Sample 10, 04 대응)
+        if not result['company'] and result['issuer']:
+             result['company'] = result['issuer']
+        
+        # 중복 체크 (Company == Issuer)
         if result['company'] and result['issuer']:
-            if result['company'].replace(" ", "") == result['issuer'].replace(" ", ""):
+            def clean(s):
+                # [Fix] 콜론(:), 세미콜론(;) 등 특수문자도 제거하여 비교
+                return re.sub(r'[\s\.\(\)주업체명상호품목:;-]', '', s)
+            
+            c_clean = clean(result['company'])
+            i_clean = clean(result['issuer'])
+            
+            if c_clean == i_clean:
                 result['issuer'] = None
         
         # 3. 부가 정보

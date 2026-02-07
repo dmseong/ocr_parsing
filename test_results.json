@@ -9,7 +9,7 @@
     "issuer": "동우바이오(주)",
     "phone": null,
     "product": null,
-    "ticket_id": "0016",
+    "ticket_id": null,
     "type": null,
     "gps": {
       "latitude": 37.105317,
@@ -79,7 +79,7 @@
     "issuer": "정우리사이클링 (주)",
     "phone": "031-354-7778",
     "product": null,
-    "ticket_id": "5",
+    "ticket_id": null,
     "type": "입고",
     "gps": null,
     "address": "경기도 화성시 팔탄면 노하길454번길 23",
@@ -240,8 +240,8 @@
     "net_weight": 13200,
     "date": "2025-10-20",
     "vehicle_num": "AB-1234",
-    "company": null,
-    "issuer": "Supplier : Global Resources Inc.",
+    "company": "Supplier : Global Resources Inc.",
+    "issuer": null,
     "phone": null,
     "product": null,
     "ticket_id": null,
@@ -256,14 +256,14 @@
       "total_weight": 100.0,
       "tare_weight": 100.0,
       "net_weight": 100.0,
-      "company": 0.0
+      "company": 80.0
     },
-    "_overall_confidence": 87.5,
+    "_overall_confidence": 92.5,
     "_issues": [
       "차량번호: 비표준 형식",
-      "회사명: 회사명 없음"
+      "회사명: 한글 없음"
     ],
-    "_review_priority": "LOW",
+    "_review_priority": "NONE",
     "_needs_review": false,
     "_parser_version": "integrated_v6",
     "_sample": "sample_08_english"
@@ -311,7 +311,7 @@
     "issuer": null,
     "phone": "031-1234-5678",
     "product": null,
-    "ticket_id": "8713",
+    "ticket_id": null,
     "type": null,
     "gps": null,
     "address": null,
@@ -334,5 +334,36 @@
     "_needs_review": false,
     "_parser_version": "integrated_v6",
     "_sample": "sample_10_extreme_noise"
+  },
+  {
+    "total_weight": 25000,
+    "tare_weight": 11500,
+    "net_weight": 13500,
+    "date": "2026-02-06",
+    "vehicle_num": "98바1234",
+    "company": "(주)태양건설",
+    "issuer": null,
+    "phone": null,
+    "product": "혼 합 폐 기 물",
+    "ticket_id": "26-0206-003",
+    "type": null,
+    "gps": null,
+    "address": null,
+    "_confidence": 100.0,
+    "_methods": {},
+    "_field_confidences": {
+      "date": 100.0,
+      "vehicle_num": 100.0,
+      "total_weight": 95.0,
+      "tare_weight": 100.0,
+      "net_weight": 100.0,
+      "company": 100.0
+    },
+    "_overall_confidence": 98.83,
+    "_issues": [],
+    "_review_priority": "NONE",
+    "_needs_review": false,
+    "_parser_version": "integrated_v6",
+    "_sample": "sample_11"
   }
 ]

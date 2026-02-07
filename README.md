@@ -66,6 +66,136 @@ python test/compare_answer.py
 - 모든 계량표에는 최소한 하나 이상의 일관된 중량 흐름이 존재한다고 가정합니다.
 - OCR 데이터는 `WordBox` 단위의 좌표 정보(boundingBox)를 포함하고 있다고 가정하며, 없을 경우 텍스트 기반 휴리스틱 엔진으로 자동 전환됩니다.
 
+
+---
+
+## 🧩 시스템 구조 (System Architecture)
+
+`UnifiedOCRParser` 내부의 추출기(Extractor) 상호 의존성 및 데이터 흐름도입니다.
+
+```mermaid
+graph TD
+    %% 스타일 정의
+    classDef default fill:#fff,stroke:#333,stroke-width:1px,color:black
+    classDef mainFlow fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:black
+    classDef fallback fill:#ffe0b2,stroke:#f57c00,stroke-width:1px,stroke-dasharray: 5 5,color:black
+    classDef extractor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:1px,color:black
+    classDef utility fill:#e1bee7,stroke:#4a148c,stroke-width:1px,color:black
+    classDef output fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:black
+    
+    %% 노드 정의
+    Start([OCR JSON Data]):::input
+    ParsedResult([Structured Result]):::output
+    
+    subgraph UnifiedParser [UnifiedOCRParser]
+        direction TB
+        CheckBBox{"Has BoundingBox?"}:::mainFlow
+        
+        %% === Main Flow (Smart Extraction) ===
+        subgraph SmartPipeline [Main Pipeline]
+            direction TB
+            Layout[Layout Analysis]:::mainFlow
+            
+            S_Ext[[SpatialValueExtractor]]:::utility
+
+            subgraph Extractors [Field Extractors]
+                direction TB
+                
+                %% 세로 배치 강제
+                subgraph Independent [Independent Extractors]
+                    direction LR
+                    W_Ext[Weight Extractor]:::extractor
+                end
+
+                subgraph SpatialUsers [Spatial Users]
+                    direction LR
+                    D_Ext[Date]:::extractor
+                    V_Ext[Vehicle]:::extractor
+                    C_Ext[Company]:::extractor
+                    P_Ext[Others]:::extractor
+                end
+                
+                subgraph Dependent [Dep. Extractors]
+                    direction LR
+                    T_Ext[Ticket ID]:::extractor
+                    I_Ext[Issuer]:::extractor
+                end
+            end
+            
+            Val_Logic[Validation & Repair]:::mainFlow
+        end
+
+        %% === Fallback Flow ===
+        subgraph TextPipeline [Fallback]
+            direction TB
+            RawText[Raw Text]:::fallback
+            Heuristic[[Heuristic Finder]]:::fallback
+        end
+
+        Scorer[Confidence Scorer]:::mainFlow
+    end
+
+    %% 연결 관계
+    Start --> CheckBBox
+    
+    CheckBBox -- Yes --> Layout
+    Layout --> Independent
+    Independent --> SpatialUsers
+    SpatialUsers --> Dependent
+    
+    SpatialUsers --> |Uses| S_Ext
+    
+    V_Ext -.-> |Input| T_Ext
+    C_Ext -.-> |Input| I_Ext
+    
+    Dependent --> Val_Logic
+    Val_Logic --> Scorer
+
+    CheckBBox -- No --> RawText
+    RawText --> Heuristic
+    Heuristic --> Scorer
+
+    Scorer --> ParsedResult
+```
+
+### 구조 설명
+- **Main Pipeline**: 좌표 정보(Bounding Box)를 활용하여 정밀하게 데이터를 추출합니다.
+  - **Independent**: 좌표 없이도 동작 가능한 중량 추출기
+  - **Spatial Users**: 좌표 분석이 필수적인 일반 필드 (날짜, 차량, 상호 등)
+  - **Dependent**: 다른 필드의 값에 의존하여 검증이 필요한 필드 (전표번호, 발행처)
+- **Fallback Pipeline**: 좌표가 없을 때 텍스트 패턴(Regex)만으로 데이터를 추출하는 비상 로직입니다.
+
+---
+
+## 📂 프로젝트 구조 (Directory Structure)
+
+```text
+ocr_pareco
+├─ docs/                  # 프로젝트 문서
+│
+├─ extractors/            # 추출기 핵심 모듈
+│  ├─ base.py             # 기본 추출기
+│  ├─ common.py           # 공통 데이터 구조
+│  ├─ config.py           # 파싱 상수/설정
+│  ├─ core.py             # 메인 추출 제어
+│  ├─ domain.py           # 도메인 검증 로직
+│  ├─ field_extractors.py # 필드별 추출기
+│  ├─ heuristic_finder.py # 정규식 기반 탐색
+│  ├─ label_detector.py   # 라벨(Key) 탐지
+│  ├─ normalizer.py       # 오타/노이즈 보정
+│  ├─ spatial_extractor.py# 공간(좌표) 분석
+│  └─ weight_engine.py    # 중량 추출/검증
+│
+├─ sample_data_ocr/       # 테스트용 샘플 JSON
+├─ test/                  # 정확도 테스트 스크립트
+│
+├─ app.py                 # 웹 대시보드 (Streamlit)
+├─ parser.py              # 파싱 엔트리포인트
+├─ confidence_scorer.py   # 신뢰도 점수 계산
+├─ requirements.txt       # 의존성 패키지
+└─ comparison_report.txt  # 테스트 결과 리포트
+```
+
 ---
 
 ## ⚠️ 한계 및 개선 아이디어

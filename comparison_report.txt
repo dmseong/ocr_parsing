@@ -8,7 +8,7 @@ sample_01                 | net_weight      | 5010                 | 5010       
 sample_01                 | company         | 곰욕환경폐기물              | 곰욕환경폐기물              | ✅
 sample_01                 | product         | None                 | None                 | ✅
 sample_01                 | type            | None                 | None                 | ✅
-sample_01                 | ticket_id       | 0016                 | 0016                 | ✅
+sample_01                 | ticket_id       | None                 | 0016                 | ❌
 sample_01                 | issuer          | 동우바이오(주)             | 동우바이오(주)             | ✅
 sample_02                 | date            | 2026-02-02           | 2026-02-02           | ✅
 sample_02                 | vehicle_num     | 80구8713              | 80구8713              | ✅
@@ -28,7 +28,7 @@ sample_03                 | net_weight      | 130                  | 130        
 sample_03                 | company         | 공육을 unle 정우리사이클링(주)  | None                 | ❌
 sample_03                 | product         | None                 | None                 | ✅
 sample_03                 | type            | 입고                   | 입고                   | ✅
-sample_03                 | ticket_id       | 5                    | 5                    | ✅
+sample_03                 | ticket_id       | None                 | 5                    | ❌
 sample_03                 | issuer          | 정우리사이클링 (주)          | 정우리사이클링(주)           | ✅
 sample_04                 | date            | 2025-12-01           | 2025-12-01           | ✅
 sample_04                 | vehicle_num     | 0580                 | 0580                 | ✅
@@ -75,11 +75,11 @@ sample_08_english         | vehicle_num     | AB-1234              | AB-1234    
 sample_08_english         | total_weight    | 25400                | 25400                | ✅
 sample_08_english         | tare_weight     | 12200                | 12200                | ✅
 sample_08_english         | net_weight      | 13200                | 13200                | ✅
-sample_08_english         | company         | None                 | None                 | ✅
+sample_08_english         | company         | Supplier : Global Resources Inc. | None                 | ❌
 sample_08_english         | product         | None                 | None                 | ✅
 sample_08_english         | type            | None                 | None                 | ✅
 sample_08_english         | ticket_id       | None                 | None                 | ✅
-sample_08_english         | issuer          | Supplier : Global Resources Inc. | Global Resources Inc. | ✅
+sample_08_english         | issuer          | None                 | Global Resources Inc. | ❌
 sample_09_unit_confusion  | date            | 2025-12-25           | 2025-12-25           | ✅
 sample_09_unit_confusion  | vehicle_num     | 경기99바1234            | 경기99바1234            | ✅
 sample_09_unit_confusion  | total_weight    | 24500                | 24500                | ✅
@@ -98,7 +98,17 @@ sample_10_extreme_noise   | net_weight      | 5010                 | 5010       
 sample_10_extreme_noise   | company         | (주)태양자원              | (주)태양자원              | ✅
 sample_10_extreme_noise   | product         | None                 | None                 | ✅
 sample_10_extreme_noise   | type            | None                 | None                 | ✅
-sample_10_extreme_noise   | ticket_id       | 8713                 | 8713                 | ✅
+sample_10_extreme_noise   | ticket_id       | None                 | 8713                 | ❌
 sample_10_extreme_noise   | issuer          | None                 | None                 | ✅
+sample_11                 | date            | 2026-02-06           | 2026-02-06           | ✅
+sample_11                 | vehicle_num     | 98바1234              | 98바1234              | ✅
+sample_11                 | total_weight    | 25000                | 25000                | ✅
+sample_11                 | tare_weight     | 11500                | 11500                | ✅
+sample_11                 | net_weight      | 13500                | 13500                | ✅
+sample_11                 | company         | (주)태양건설              | (주)태양건설              | ✅
+sample_11                 | product         | 혼 합 폐 기 물            | 혼합폐기물                | ✅
+sample_11                 | type            | None                 | None                 | ✅
+sample_11                 | ticket_id       | 26-0206-003          | 26-0206-003          | ✅
+sample_11                 | issuer          | None                 | None                 | ✅
 -----------------------------------------------------------------------------------------------
-Total Match Rate: 99/100 (99.00%)
+Total Match Rate: 104/110 (94.55%)
