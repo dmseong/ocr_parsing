@@ -72,23 +72,23 @@ class SpatialValueExtractor:
                 # 반드시 라벨 오른쪽에 있어야 함
                 is_valid_x = word.x_min > anchor.x_max - THRESHOLDS['SPATIAL']['MARGIN_RIGHT']
             else: # 다음 라인 (아래)
-                # 라벨의 시작점과 비슷하거나 오른쪽에 있으면 됨 (Sample 10 대응)
+                # 라벨의 시작점과 비슷하거나 오른쪽에 있으면 됨
                 # 너무 왼쪽으로 치우치지만 않으면 허용
                 is_valid_x = word.x_min >= anchor.x_min - THRESHOLDS['SPATIAL']['MARGIN_NEXT_LINE_START']
 
             if is_valid_x:
                 x_dist = word.x_min - anchor.x_max
                 
-                # [수정] 같은 라인(Y오차 15이내) 우선순위 강력 부여
+                # 같은 라인(Y오차 15이내) 우선순위 강력 부여
                 if abs(y_diff) <= THRESHOLDS['SPATIAL']['SAME_LINE_Y_DIFF']:
                     x_dist = word.x_min - anchor.x_max
                     dist = x_dist * THRESHOLDS['SPATIAL']['WEIGHT_SAME_LINE']
                 else:
-                    # [Fix] 다음 라인인 경우, X축 거리는 '라벨 시작점과의 차이'(정렬)로 계산
-                    # 기존 (x_min - x_max)는 라벨이 길수록 음수가 되어 거리가 줄어드는 오류 존재
+                    # 다음 라인인 경우, X축 거리는 '라벨 시작점과의 차이'(정렬)로 계산
+                    # 라벨 길이에 무관한 거리 측정 로직 적용
                     x_align_diff = abs(word.x_min - anchor.x_min)
                     
-                    # 줄바꿈 페널티 완화 (Sample 01 대응) + 정렬 차이
+                    # 줄바꿈 페널티 완화 및 정렬 차이 고려
                     dist = x_align_diff + (abs(y_diff) * THRESHOLDS['SPATIAL']['WEIGHT_VERTICAL_PENALTY_MULTIPLIER'])
                 
                 if dist <= threshold:

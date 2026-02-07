@@ -133,14 +133,13 @@ if 'parsed_result' in st.session_state:
     
     st.divider()
 
-    # [수정] 레이아웃 복원(2) : 실시간 중량 검증(1) 컬럼 분할
+    # 레이아웃 복원(2) : 실시간 중량 검증(1) 컬럼 분할
     col_layout, col_weight = st.columns([2, 1])
 
-    # 오른쪽 (1): 실시간 중량 검증 컨테이너 확보
     with col_weight:
         weight_check_container = st.container()
     
-    # 왼쪽 (2): 레이아웃 복원 시각화
+    # 레이아웃 복원 시각화
     with col_layout:
         def has_bounding_box(data):
             """OCR 데이터에 boundingBox가 있는지 확인"""
@@ -259,7 +258,7 @@ if 'parsed_result' in st.session_state:
         except Exception as e:
             st.error(f"GPS 데이터 파싱 오류: {str(e)}")
             
-    # [이동됨] 실시간 중량 검증 로직 구현 및 번역
+    # 실시간 중량 검증 로직 구현 및 번역
     # 위에서 생성한 weight_check_container에 내용을 채웁니다.
     if 'edited_df' in locals():
         with weight_check_container:

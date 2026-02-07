@@ -1,6 +1,6 @@
 import re
 from typing import List, Dict, Any, Optional
-from .common import WordBox
+from .common import WordBox, analyze_layout
 from .config import CONSTANTS, KEYWORDS, NOISE_KEYWORDS, LABEL_CONFIG
 from .base import BaseExtractor
 from rapidfuzz import fuzz
@@ -14,7 +14,6 @@ class WeightExtractor(BaseExtractor):
     
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Dict[str, Any]:
         """UnifiedWeightEngine에 위임"""
-        from .common import analyze_layout
         layout = analyze_layout(word_boxes)
         return self.unified_engine.extract_weights(word_boxes, layout)
 
@@ -43,7 +42,7 @@ class VehicleExtractor(BaseExtractor):
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
         val = self._extract_candidate(word_boxes)
         if val:
-            # [Fix] 차량번호 앞 노이즈(상호, 업체명, 상, 체명 등) 제거
+            # 차량번호 앞 노이즈(상호, 업체명, 상, 체명 등) 제거
             # 예: "상80구8713" -> "80구8713", "체명98바1234" -> "98바1234"
             val = re.sub(r'^(상|체명|차량\s*번호|번호)\s*', '', val).strip()
             return val
@@ -80,7 +79,7 @@ class CompanyExtractor(BaseExtractor):
                 if self._is_label_noise(value):
                     pass # Skip using this value
                 else:
-                    # [Fix] Spatial 추출 결과에 대해서도 Heuristic 정제 적용 (Sample 03 노이즈 제거)
+                    # Spatial 추출 결과에 대해서도 Heuristic 정제 적용 (노이즈 제거)
                     refined = self.heuristic_finder.extract_company(value)
                     if refined: 
                         return refined
@@ -90,7 +89,7 @@ class CompanyExtractor(BaseExtractor):
                     final_val = value.strip().replace(" ", "").replace("..", "").replace("...", "")
                     
                     if not self._is_label_noise(final_val): # 최종 값도 다시 확인
-                        # [Fix] "고요환경품명" -> "고요환경" (Sample 02)
+                        # [Fix] 텍스트 후행 노이즈 제거
                         return self._clean_trailing_label(final_val)
             
         # 전략 2: 특정 키워드 패턴 (귀하 등)
@@ -234,7 +233,7 @@ class IssuerExtractor(BaseExtractor):
         val = self.heuristic_finder.extract_issuer(full_text, company=last_company)
         if val: return val
 
-        # 전략 2: 하단부/상단부 가중치 기반 클러스터링 (Legacy Spatial logic)
+        # 전략 2: 위치 가중치 기반 클러스터링
         max_y = max(w.y_max for w in word_boxes)
         bottom_threshold = max_y * CONSTANTS['ISSUER_BOTTOM_RATIO']
         top_threshold = max_y * CONSTANTS['ISSUER_TOP_RATIO']
@@ -313,7 +312,7 @@ class ProductExtractor(BaseExtractor):
         # 전략 1: 공간 기반
         label_word = self.label_detector.find_label_in_wordboxes("product", word_boxes, threshold=60)
         if label_word:
-            # [Fix] Layout threshold 완화 (Sample 11: 품 .. 목 : ... 혼 합 폐 기 물)
+            # [Fix] Layout threshold 완화
             # colon이 분리되어 있거나 거리가 멀 수 있음
             value = self.spatial_extractor.extract_value_near_label(label_word, word_boxes, "text", layout_threshold=400)
             if value and self._is_valid_product(value): 
@@ -382,5 +381,3 @@ class AddressExtractor(BaseExtractor):
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
         full_text = self.get_full_text(word_boxes)
         return self.heuristic_finder.extract_address(full_text)
-
-

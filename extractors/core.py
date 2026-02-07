@@ -53,7 +53,6 @@ class SmartFieldExtractor:
     def extract_all(self, word_boxes: List[WordBox], layout: Any = None) -> Dict[str, Any]:
         """모든 필드 추출"""
         result = {}
-        methods = {}
         
         # 1. 중량
         weights = self.weight_extractor.extract(word_boxes)
@@ -71,7 +70,7 @@ class SmartFieldExtractor:
         self.issuer_extractor.set_company_for_validation(result['company'])
         result['issuer'] = self.issuer_extractor.extract(word_boxes)
         
-        # [Fix] Supplier가 Company에 잡힌 경우 Issuer로 이동 (Sample 08 대응)
+        # [Fix] 특정 노이즈 패턴에 의한 필드 오검출 보정
         if result['company'] and 'Supplier' in result['company']:
              val = result['company']
              # "Supplier : Global..." -> "Global..."
@@ -105,26 +104,4 @@ class SmartFieldExtractor:
         result['gps'] = self.gps_extractor.extract(word_boxes)
         result['address'] = self.address_extractor.extract(word_boxes)
         
-        # 신뢰도 계산
-        result['_confidence'] = self._calculate_confidence(result)
-        result['_methods'] = methods
-        
         return result
-    
-    def _calculate_confidence(self, result: Dict) -> float:
-        """신뢰도 계산"""
-        score = 100.0
-        required = ['date', 'vehicle_num', 'total_weight']
-        for field in required:
-            if not result.get(field): score -= 20
-        if not result.get('company') and not result.get('issuer'): score -= 10
-        
-        total = result.get('total_weight')
-        tare = result.get('tare_weight')
-        net = result.get('net_weight')
-        if total and tare and net:
-            error = abs(total - (tare + net))
-            if error > 100: score -= 30
-            elif error > 50: score -= 15
-        
-        return max(0, score)

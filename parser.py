@@ -4,7 +4,7 @@ import statistics
 from typing import List, Dict, Optional, Tuple, Any
 from dataclasses import dataclass
 
-# 기존 모듈 import
+# 외부 모듈 import
 from extractors.normalizer import AdvancedNoiseNormalizer
 from extractors.common import (
     WordBox, Line, DocumentLayout,
@@ -137,10 +137,9 @@ class UnifiedOCRParser:
                 result = self._empty_result()
             else:
                 layout = analyze_layout(word_boxes)
-                # lines = cluster_lines(word_boxes, layout) # Not used by SmartFieldExtractor
                 
                 # 3. 전략 실행 (Single Pipeline)
-                # 이제 SmartFieldExtractor가 모든 것을 담당 (Legacy Fallback 포함)
+                # SmartFieldExtractor가 모든 것을 담당
                 if self.use_smart and self.smart_extractor:
                     try:
                         result = self.smart_extractor.extract_all(word_boxes, layout)
@@ -152,8 +151,8 @@ class UnifiedOCRParser:
                     # Smart Extractor가 없는 경우 (거의 없음)
                     result = self._empty_result()
                     
-                # 4. 결과 보정
-                result = self._repair_weights(result)
+                # 4. 결과 보정 (항상 ConfidenceScorer에서 수행됨)
+                pass
         
         # 5. 신뢰도 측정 및 메타데이터 (항상 수행)
         if self.use_scorer and self.scorer:
@@ -168,7 +167,7 @@ class UnifiedOCRParser:
         if not raw_text:
             return self._empty_result()
         
-        # 텍스트 기반 Fallback 파싱 (SmartExtractor 내부 기능 사용)
+        # 텍스트 기반 파싱 (SmartExtractor 내부 기능 사용)
         result = self._empty_result()
         if self.use_smart and self.smart_extractor:
              # 임시 WordBox 생성 (좌표 0)
@@ -183,7 +182,6 @@ class UnifiedOCRParser:
              # SmartExtractor 내부에 heuristic_finder가 없으므로 새로 생성하거나 import 필요
              # 여기서는 직접 생성하여 사용
              try:
-                 from extractors.heuristic_finder import HeuristicValueFinder
                  heuristic = HeuristicValueFinder(self.normalizer)
                  
                  # 1. 날짜
@@ -229,24 +227,8 @@ class UnifiedOCRParser:
                  pass
 
         result['_parser_method'] = 'text_fallback_heuristic'
-        # [DEBUG]
-        # print(f"[DEBUG_TEXT_FALLBACK] Date: {result.get('date')}, Veh: {result.get('vehicle_num')}, Comp: {result.get('company')}")
         return result
 
-    def _repair_weights(self, result: dict) -> dict:
-        """중량 방정식 기반 자동 보정 (Total = Tare + Net)"""
-        tw = result.get('total_weight')
-        raw_tare = result.get('tare_weight')
-        nw = result.get('net_weight')
-        
-        if tw and raw_tare and not nw:
-            result['net_weight'] = tw - raw_tare
-        elif tw and nw and not raw_tare:
-            result['tare_weight'] = tw - nw
-        elif raw_tare and nw and not tw:
-            result['total_weight'] = raw_tare + nw
-            
-        return result
     
     def _has_bounding_boxes(self, json_data: dict) -> bool:
         """boundingBox 존재 여부"""
@@ -268,17 +250,6 @@ class UnifiedOCRParser:
     
     # _ensemble_weights 제거됨 (단일 소스)
     
-    def _validate_weight_equation(self, weights: dict) -> bool:
-        """방정식 검증 (Total = Tare + Net)"""
-        total = weights.get('total')
-        tare = weights.get('tare')
-        net = weights.get('net')
-        
-        if not (total and tare and net):
-            return False
-        
-        error = abs(total - (tare + net))
-        return error <= 50
     
     # =========================================================================
     # Text Parsers

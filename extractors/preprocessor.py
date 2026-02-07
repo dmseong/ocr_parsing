@@ -44,6 +44,7 @@ class OCRPreprocessor:
                 # 예외: 1,000의 콤마나 소수점 등이 단독으로 떨어져 나온 경우...
                 # 하지만 보통 WordBox 단위에서 특수문자 단독은 노이즈일 확률이 높음.
                 # 위험하므로 일단 유지하되, 정제만 수행
+                # Pass 3: 한글 OCR 오류 보정
                 pass
             
             box.text = cleaned_text
@@ -81,7 +82,7 @@ class OCRPreprocessor:
         # 4. 불필요한 공백 축소 (두 칸 이상 -> 한 칸)
         text = re.sub(r'\s+', ' ', text)
         
-        # 5. 특정 노이즈 키워드 제거 (Sample 03 '공육을 unle' 등)
+        # 5. 특정 노이즈 키워드 제거
         # 이런 무의미한 단어는 전처리 단계에서 날리는 것이 안전함
         NOISE_KEYWORDS = ['공육을', 'unle']
         if text in NOISE_KEYWORDS:

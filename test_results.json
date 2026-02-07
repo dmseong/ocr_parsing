@@ -9,15 +9,13 @@
     "issuer": "동우바이오(주)",
     "phone": null,
     "product": null,
-    "ticket_id": null,
+    "ticket_id": "0016",
     "type": null,
     "gps": {
       "latitude": 37.105317,
       "longitude": 127.375673
     },
     "address": null,
-    "_confidence": 100.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 80.0,
@@ -52,8 +50,6 @@
       "longitude": 126.84494
     },
     "address": null,
-    "_confidence": 100.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 100.0,
@@ -79,12 +75,10 @@
     "issuer": "정우리사이클링 (주)",
     "phone": "031-354-7778",
     "product": null,
-    "ticket_id": null,
+    "ticket_id": "5",
     "type": "입고",
     "gps": null,
     "address": "경기도 화성시 팔탄면 노하길454번길 23",
-    "_confidence": 100.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 80.0,
@@ -117,8 +111,6 @@
     "type": "입고",
     "gps": null,
     "address": "경기도 화성시 팔탄면 포승향남로 2960-19",
-    "_confidence": 100.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 80.0,
@@ -249,8 +241,6 @@
     "type": null,
     "gps": null,
     "address": null,
-    "_confidence": 100.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 60.0,
@@ -283,8 +273,6 @@
     "type": null,
     "gps": null,
     "address": null,
-    "_confidence": 90.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 100.0,
@@ -316,8 +304,6 @@
     "type": null,
     "gps": null,
     "address": null,
-    "_confidence": 80.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 0.0,
       "vehicle_num": 80.0,
@@ -350,8 +336,6 @@
     "type": null,
     "gps": null,
     "address": null,
-    "_confidence": 100.0,
-    "_methods": {},
     "_field_confidences": {
       "date": 100.0,
       "vehicle_num": 100.0,

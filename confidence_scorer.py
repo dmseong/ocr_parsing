@@ -14,6 +14,8 @@ Confidence Scoring & Review System
 from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
 from enum import Enum
+import re
+from datetime import datetime
 
 from extractors.domain import DomainRules
 
@@ -46,14 +48,6 @@ class ValidationResult:
     issues: List[str]
     repaired_values: Dict[str, Any]
     review_priority: ReviewPriority
-
-
-# =============================================================================
-# Domain Rules
-# =============================================================================
-
-
-
 
 # =============================================================================
 # Field Validators
@@ -159,9 +153,6 @@ class DateValidator:
         Returns:
             (confidence, issues)
         """
-        import re
-        from datetime import datetime
-        
         if not date_str:
             return 0.0, ["날짜 없음"]
         
@@ -219,8 +210,6 @@ class VehicleValidator:
         Returns:
             (confidence, issues)
         """
-        import re
-        
         if not vehicle_num:
             return 0.0, ["차량번호 없음"]
         
@@ -284,7 +273,6 @@ class CompanyValidator:
                 break
         
         # 한글 포함 여부
-        import re
         if not re.search(r'[가-힣]', company_name):
             confidence -= 20
             issues.append("한글 없음")

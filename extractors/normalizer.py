@@ -101,7 +101,7 @@ class AdvancedNoiseNormalizer:
         result = self._apply_char_map(result)
         result = self._apply_pattern_map(result)
         
-        # [Fix] k9 -> kg (Char map 적용 후에도 남을 수 있음)
+        # k9 -> kg (Char map 적용 후에도 남을 수 있음)
         result = re.sub(r'(?i)\bk9\b', 'kg', result)
         
         return result

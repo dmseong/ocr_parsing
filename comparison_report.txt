@@ -8,7 +8,7 @@ sample_01                 | net_weight      | 5010                 | 5010       
 sample_01                 | company         | 곰욕환경폐기물              | 곰욕환경폐기물              | ✅
 sample_01                 | product         | None                 | None                 | ✅
 sample_01                 | type            | None                 | None                 | ✅
-sample_01                 | ticket_id       | None                 | 0016                 | ❌
+sample_01                 | ticket_id       | 0016                 | 0016                 | ✅
 sample_01                 | issuer          | 동우바이오(주)             | 동우바이오(주)             | ✅
 sample_01                 | gps             | {'latitude': 37.105317, 'longitude': 127.375673} | 37.105317, 127.375673 | ✅
 sample_01                 | phone           | None                 | None                 | ✅
@@ -32,7 +32,7 @@ sample_03                 | net_weight      | 130                  | 130        
 sample_03                 | company         | None                 | None                 | ✅
 sample_03                 | product         | None                 | None                 | ✅
 sample_03                 | type            | 입고                   | 입고                   | ✅
-sample_03                 | ticket_id       | None                 | 5                    | ❌
+sample_03                 | ticket_id       | 5                    | 5                    | ✅
 sample_03                 | issuer          | 정우리사이클링 (주)          | 정우리사이클링(주)           | ✅
 sample_03                 | gps             | None                 | None                 | ✅
 sample_03                 | phone           | 031-354-7778         | 031-354-7778         | ✅
@@ -132,4 +132,4 @@ sample_11                 | issuer          | None                 | None       
 sample_11                 | gps             | None                 | None                 | ✅
 sample_11                 | phone           | None                 | None                 | ✅
 -----------------------------------------------------------------------------------------------
-Total Match Rate: 128/131 (97.71%)
+Total Match Rate: 130/131 (99.24%)

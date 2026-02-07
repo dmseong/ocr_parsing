@@ -97,7 +97,7 @@ class UnifiedWeightEngine:
         if not valid_triplets:
             return None
             
-        # [Priority] 값이 큰 조합을 우선 (작은 숫자는 차량번호/ID와 겹칠 확률 높음)
+        # 값이 큰 조합을 우선 (작은 숫자는 차량번호/ID와 겹칠 확률 높음)
         valid_triplets.sort(key=lambda x: x.get('total_score', 0), reverse=True)
         best = valid_triplets[0]
         # total_score 필드는 제거하고 반환
@@ -303,7 +303,7 @@ class UnifiedWeightEngine:
             if re.match(r'^\d{1,2}시$', text) or re.match(r'^\d{1,2}분$', text):
                 continue
             
-            # [Fix] O->0 변환 적용 (25 O00 -> 25 000)
+            # O->0 변환 적용 (25 O00 -> 25 000)
             text_norm = self._normalize_ocr_digits(text)
             
             # 숫자 추출
@@ -330,7 +330,7 @@ class UnifiedWeightEngine:
                 is_ton = True
                 
         try:
-            # 1. 그냥 합쳐서 int (기존 로직)
+            # 1. 숫자 결합 시도
             val_int = int(combined_raw)
             if self._is_valid_weight_value(val_int, has_kg or is_ton):
                 return val_int
@@ -387,7 +387,7 @@ class UnifiedWeightEngine:
             text = word.text.lower().replace(' ', '')
             
             # 1. 단위 확인
-            # [Fix] net 의 t 등을 ton으로 오인하는 문제 방지
+            # net 의 t 등을 ton으로 오인하는 문제 방지
             is_ton = bool(re.search(r'(?<![a-z])(ton|t|톤)\b', text))
             has_kg = 'kg' in text or 'k9' in text
             
@@ -405,8 +405,8 @@ class UnifiedWeightEngine:
                         is_ton = True
 
             # 2. 숫자 파싱 (소수점 고려)
-            # [Fix] O, B 등 오인식 보정 적용 후 숫자 추출
-            # [Fix] 공백 제거 추가 (25 O00 -> 25000)
+            # O, B 등 오인식 보정 적용 후 숫자 추출
+            # 공백 제거 추가 (25 O00 -> 25000)
             clean_word_text = self._normalize_ocr_digits(word.text.replace(',', '').replace(' ', ''))
             digits = re.findall(r'\d+\.\d+|\d+', clean_word_text)
             
