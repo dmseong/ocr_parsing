@@ -215,11 +215,18 @@ if 'parsed_result' in st.session_state:
         # JSON 코드 블록 (복사 버튼 포함)
         st.code(json_str, language="json")
         
+        # 다운로드 파일명 생성
+        if uploaded_file:
+            base_name = os.path.splitext(uploaded_file.name)[0]
+            download_filename = f"{base_name}_result.json"
+        else:
+            download_filename = "parsed_result.json"
+
         # 다운로드 버튼
         st.download_button(
             label="💾 Download JSON",
             data=json_str,
-            file_name="parsed_result.json",
+            file_name=download_filename,
             mime="application/json"
         )
             
