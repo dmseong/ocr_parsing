@@ -5,7 +5,7 @@
     "net_weight": 5010,
     "date": "2026-02-02",
     "vehicle_num": "8713",
-    "company": "곰욕환경폐기물",
+    "company": "곰욕환경폐기물품종명랑05",
     "issuer": "동우바이오(주)",
     "phone": null,
     "product": null,
@@ -75,7 +75,7 @@
     "net_weight": 130,
     "date": "2026-02-01",
     "vehicle_num": "5405",
-    "company": "공육을 unle 정우리사이클링(주)",
+    "company": null,
     "issuer": "정우리사이클링 (주)",
     "phone": "031-354-7778",
     "product": null,
@@ -91,11 +91,12 @@
       "total_weight": 100.0,
       "tare_weight": 100.0,
       "net_weight": 100.0,
-      "company": 100.0
+      "company": 0.0
     },
-    "_overall_confidence": 96.88,
+    "_overall_confidence": 90.62,
     "_issues": [
-      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)"
+      "차량번호: 4자리 숫자만 (지역/문자 누락 가능성)",
+      "회사명: 회사명 없음"
     ],
     "_review_priority": "NONE",
     "_needs_review": false,
@@ -142,7 +143,7 @@
     "tare_weight": 18250,
     "net_weight": 5230,
     "company": "대한리싸이클",
-    "product": "고 철",
+    "product": "고철",
     "type": "출고",
     "ticket_id": null,
     "issuer": "(주)한국자원",
@@ -175,7 +176,7 @@
     "tare_weight": 22440,
     "net_weight": 9440,
     "company": "청정그린",
-    "product": "폐 지",
+    "product": "폐지",
     "type": "입고",
     "ticket_id": "023487",
     "issuer": "그린환경(주)",
@@ -240,8 +241,8 @@
     "net_weight": 13200,
     "date": "2025-10-20",
     "vehicle_num": "AB-1234",
-    "company": "Supplier : Global Resources Inc.",
-    "issuer": null,
+    "company": null,
+    "issuer": "Supplier : Global Resources Inc.",
     "phone": null,
     "product": null,
     "ticket_id": null,
@@ -256,14 +257,14 @@
       "total_weight": 100.0,
       "tare_weight": 100.0,
       "net_weight": 100.0,
-      "company": 80.0
+      "company": 0.0
     },
-    "_overall_confidence": 92.5,
+    "_overall_confidence": 87.5,
     "_issues": [
       "차량번호: 비표준 형식",
-      "회사명: 한글 없음"
+      "회사명: 회사명 없음"
     ],
-    "_review_priority": "NONE",
+    "_review_priority": "LOW",
     "_needs_review": false,
     "_parser_version": "integrated_v6",
     "_sample": "sample_08_english"
@@ -344,7 +345,7 @@
     "company": "(주)태양건설",
     "issuer": null,
     "phone": null,
-    "product": "혼 합 폐 기 물",
+    "product": "혼합폐기물",
     "ticket_id": "26-0206-003",
     "type": null,
     "gps": null,

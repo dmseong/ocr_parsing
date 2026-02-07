@@ -64,15 +64,32 @@ class SpatialValueExtractor:
             y_diff = word.centroid[1] - anchor.centroid[1]
             is_same_or_below = CONSTANTS['SPATIAL_Y_MIN'] <= y_diff <= CONSTANTS['SPATIAL_Y_MAX']
             
-            if is_right and is_same_or_below:
+            if not is_same_or_below:
+                continue
+
+            # 조건 1: X축 위치 (라인에 따라 다름)
+            if abs(y_diff) <= 15: # 같은 라인
+                # 반드시 라벨 오른쪽에 있어야 함
+                is_valid_x = word.x_min > anchor.x_max - 20
+            else: # 다음 라인 (아래)
+                # 라벨의 시작점과 비슷하거나 오른쪽에 있으면 됨 (Sample 10 대응)
+                # 너무 왼쪽으로 치우치지만 않으면 허용
+                is_valid_x = word.x_min >= anchor.x_min - 50
+
+            if is_valid_x:
                 x_dist = word.x_min - anchor.x_max
                 
                 # [수정] 같은 라인(Y오차 15이내) 우선순위 강력 부여
                 if abs(y_diff) <= 15:
+                    x_dist = word.x_min - anchor.x_max
                     dist = x_dist * 0.5
                 else:
-                    # 줄바꿈 페널티 완화 (Sample 01 대응)
-                    dist = x_dist + (abs(y_diff) * 3)
+                    # [Fix] 다음 라인인 경우, X축 거리는 '라벨 시작점과의 차이'(정렬)로 계산
+                    # 기존 (x_min - x_max)는 라벨이 길수록 음수가 되어 거리가 줄어드는 오류 존재
+                    x_align_diff = abs(word.x_min - anchor.x_min)
+                    
+                    # 줄바꿈 페널티 완화 (Sample 01 대응) + 정렬 차이
+                    dist = x_align_diff + (abs(y_diff) * 3)
                 
                 if dist <= threshold:
                     candidates.append((dist, word))

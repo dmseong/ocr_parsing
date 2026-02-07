@@ -37,8 +37,18 @@ class DateExtractor(BaseExtractor):
              return match.group().replace('.', '-').replace('/', '-')
         return None
 
+
 class VehicleExtractor(BaseExtractor):
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
+        val = self._extract_candidate(word_boxes)
+        if val:
+            # [Fix] 차량번호 앞 노이즈(상호, 업체명, 상, 체명 등) 제거
+            # 예: "상80구8713" -> "80구8713", "체명98바1234" -> "98바1234"
+            val = re.sub(r'^(상|체명|차량\s*번호|번호)\s*', '', val).strip()
+            return val
+        return None
+
+    def _extract_candidate(self, word_boxes: List[WordBox]) -> Optional[str]:
         # 전략 1: 공간 기반
         label_word = self.label_detector.find_label_in_wordboxes("vehicle", word_boxes)
         if label_word:
@@ -66,16 +76,28 @@ class CompanyExtractor(BaseExtractor):
         if label_word:
             value = self.spatial_extractor.extract_value_near_label(label_word, word_boxes, "text", layout_threshold=300)
             if value:
-                 # [Fix] Spatial 추출 결과에 대해서도 Heuristic 정제 적용 (Sample 03 노이즈 제거)
-                 refined = self.heuristic_finder.extract_company(value)
-                 if refined: return refined
-                 # [Fix] Fallback: 공백 및 점 제거 (Sample 11)
-                 return value.strip().replace(" ", "").replace("..", "").replace("...", "")
+                if self._is_label_noise(value):
+                    pass # Skip using this value
+                else:
+                    # [Fix] Spatial 추출 결과에 대해서도 Heuristic 정제 적용 (Sample 03 노이즈 제거)
+                    refined = self.heuristic_finder.extract_company(value)
+                    if refined: 
+                        return refined
+                    
+                    # [Fix] Fallback: 공백 및 점 제거, 그리고 노이즈 키워드 직접 제거
+                    value = value.replace("공육을", "").replace("unle", "")
+                    final_val = value.strip().replace(" ", "").replace("..", "").replace("...", "")
+                    
+                    if not self._is_label_noise(final_val): # 최종 값도 다시 확인
+                        # [Fix] "고요환경품명" -> "고요환경" (Sample 02)
+                        return self._clean_trailing_label(final_val)
             
         # 전략 2: 특정 키워드 패턴 (귀하 등)
         for i, word in enumerate(word_boxes):
             if "귀하" in word.text and i > 0:
-                return word_boxes[i-1].text.strip()
+                val = word_boxes[i-1].text.strip()
+                if not self._is_label_noise(val):
+                    return self._clean_trailing_label(val)
                 
         # 전략 3: 휴리스틱 정규식
         full_text = self.get_full_text(word_boxes)
@@ -84,9 +106,35 @@ class CompanyExtractor(BaseExtractor):
         # [New] 공간 검증 (Issuer 위치 오탐 방지)
         if val:
              if self._validate_heuristic_location(val, word_boxes):
-                 return val
+                 if not self._is_label_noise(val):
+                     return self._clean_trailing_label(val)
              
         return None
+
+    def _is_label_noise(self, text: str) -> bool:
+        """텍스트가 '품명', '제품', '구분', '날짜' 등 다른 라벨인지 확인"""
+        noise_keywords = ["품명", "제품", "구분", "날짜", "시간", "중량", "차량", "전표", "계량"]
+        clean = text.replace(" ", "").replace(":", "").replace(".", "")
+        if clean in noise_keywords:
+            return True
+        # "품명:" 같은 경우 처리
+        if any(clean.startswith(k) and len(clean) <= len(k)+1 for k in noise_keywords):
+            return True
+        return False
+        
+    def _clean_trailing_label(self, text: str) -> str:
+        """값 뒤에 붙은 다음 필드 라벨(품명 등) 제거"""
+        noise_keywords = ["품명", "제품", "구분", "날짜", "시간", "중량", "차량", "전표", "계량", "발행"]
+        for k in noise_keywords:
+            if text.endswith(k):
+                return text[:-len(k)].strip()
+            if k in text:
+                 # "고요환경품명" -> "고요환경" (보수적 접근: 라벨이 뒤쪽에 있을 때만)
+                 idx = text.find(k)
+                 if idx > 0 and idx + len(k) == len(text):
+                     return text[:idx].strip()
+        return text
+
 
     def _validate_heuristic_location(self, value: str, word_boxes: List[WordBox]) -> bool:
         """Heuristic으로 찾은 Company 값이 공간적으로 타당한지 검증"""
@@ -114,51 +162,7 @@ class CompanyExtractor(BaseExtractor):
             
         return True
 
-class TicketIdExtractor(BaseExtractor):
-    def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
-        vehicle_num = kwargs.get('vehicle_num')
-        full_text = self.get_full_text(word_boxes)
-        
-        # [Fix] Normalizer 적용하여 "일 련 번 호" -> "일련번호" 변환
-        norm_text = self.normalizer.normalize(full_text, 'label')
-        
-        return self.heuristic_finder.find_ticket_id_in_text(norm_text, vehicle_num=vehicle_num)
-# ... (중략) ...
 
-    def _expand_issuer_name(self, anchor: WordBox, word_boxes: List[WordBox]) -> str:
-        if not anchor: return ""
-        # ... (생략: 기존 코드)
-        combined = " ".join(w.text for w in line_words[start_idx : end_idx + 1]).strip()
-        combined = re.sub(r'(전화|TEL|FAX).*$', '', combined, flags=re.IGNORECASE)
-        combined = re.sub(r'[\d-]{9,}', '', combined).strip()
-        combined = re.sub(r'(?<=[가-힣])\s+(?=[가-힣])', '', combined)
-        
-        # [Fix] 접두어(업체명, 상호 등)가 포함된 경우 제거 (Sample 11)
-        combined = re.sub(r'^(업\s*체\s*명|상\s*호|공\s*급\s*자|성\s*명)\s*[:;]?\s*', '', combined).strip()
-        
-        return combined
-
-# ... (중략) ...
-
-class TicketIdExtractor(BaseExtractor):
-    def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
-        vehicle_num = kwargs.get('vehicle_num')
-        full_text = self.get_full_text(word_boxes)
-        
-        # [Fix] Normalizer 적용하여 "일 련 번 호" -> "일련번호" 변환
-        norm_text = self.normalizer.normalize(full_text, 'label')
-        
-        return self.heuristic_finder.find_ticket_id_in_text(norm_text, vehicle_num=vehicle_num)
-        for i, word in enumerate(word_boxes):
-            if "귀하" in word.text and i > 0:
-                return word_boxes[i-1].text.strip()
-                
-        # 전략 3: 휴리스틱 정규식
-        full_text = self.get_full_text(word_boxes)
-        val = self.heuristic_finder.extract_company(full_text)
-        if val: return val
-            
-        return None
 
 class IssuerExtractor(BaseExtractor):
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
@@ -249,25 +253,61 @@ class ProductExtractor(BaseExtractor):
         # 전략 1: 공간 기반
         label_word = self.label_detector.find_label_in_wordboxes("product", word_boxes, threshold=60)
         if label_word:
-            value = self.spatial_extractor.extract_value_near_label(label_word, word_boxes, "text", layout_threshold=CONSTANTS['LABEL_MERGE_DIST_X'])
-            if value and self._is_valid_product(value): return value
+            # [Fix] Layout threshold 완화 (Sample 11: 품 .. 목 : ... 혼 합 폐 기 물)
+            # colon이 분리되어 있거나 거리가 멀 수 있음
+            value = self.spatial_extractor.extract_value_near_label(label_word, word_boxes, "text", layout_threshold=400)
+            if value and self._is_valid_product(value): 
+                return self._clean_product_value(value)
             
         # 전략 2: 휴리스틱
         full_text = self.get_full_text(word_boxes)
-        return self.heuristic_finder.extract_product(full_text)
+        value = self.heuristic_finder.extract_product(full_text)
+        if value:
+            return self._clean_product_value(value)
+        return None
+
+    def _clean_product_value(self, text: str) -> str:
+        """한글 사이 공백 제거 및 노이즈 제거 (+ Context-aware splitting)"""
+        if not text: return text
+        
+        # 1. [Fix] Next Field Label 제거 (Context-aware truncation)
+        # "국판구분출" -> "국판" ("구분"부터 잘라냄), "폐지 입고" -> "폐지"
+        # 공백이 섞여있어도 동작하도록 (구 분, 구  분)
+        next_labels = ["구분", "입고", "출고", "수량", "중량", "비고", "차량", "전표", "단가", "금액", "확인"]
+        
+        for label in next_labels:
+            # 글자 사이 공백 유연하게 허용하는 패턴 생성 (예: 구\s*분)
+            pattern = r"\s*".join(list(label))
+            
+            # 해당 패턴이 발견되면 그 시작 위치 앞까지만 사용
+            match = re.search(pattern, text)
+            if match:
+                # 매칭된 라벨 앞부분만 잘라내기
+                text = text[:match.start()].strip()
+                
+        # 2. [Fix] 한글 사이 공백 제거 ("혼 합 폐 기 물" -> "혼합폐기물")
+        # 단, 영문 등 다른 문자 사이 공백은 유지 ("Plastic PE")
+        text = re.sub(r'(?<=[가-힣])\s+(?=[가-힣])', '', text)
+        
+        return text.strip()
         
     def _is_valid_product(self, text: str) -> bool:
         if re.search(r'\d{1,2}시', text) or re.search(r'\d{1,2}:\d{2}', text): return False
         if re.search(r'\d{4}-\d{2}-\d{2}', text) or re.search(r'\d{4}\.\d{2}\.\d{2}', text): return False
         clean = text.replace(",", "").replace(" ", "").lower()
         if re.match(r'^\d+(\.\d+)?(kg|ton|g|t)?$', clean): return False
+        if len(clean) < 2: return False
         return True
 
 class TicketIdExtractor(BaseExtractor):
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
         vehicle_num = kwargs.get('vehicle_num')
         full_text = self.get_full_text(word_boxes)
-        return self.heuristic_finder.find_ticket_id_in_text(full_text, vehicle_num=vehicle_num)
+        
+        # [Fix] Normalizer 적용하여 "일 련 번 호" -> "일련번호" 변환
+        norm_text = self.normalizer.normalize(full_text, 'label')
+        
+        return self.heuristic_finder.find_ticket_id_in_text(norm_text, vehicle_num=vehicle_num)
 
 class TypeExtractor(BaseExtractor):
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
@@ -283,3 +323,5 @@ class AddressExtractor(BaseExtractor):
     def _do_extract(self, word_boxes: List[WordBox], **kwargs) -> Optional[str]:
         full_text = self.get_full_text(word_boxes)
         return self.heuristic_finder.extract_address(full_text)
+
+

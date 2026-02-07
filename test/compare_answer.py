@@ -110,8 +110,11 @@ def compare():
     
     with open('comparison_report.txt', 'w', encoding='utf-8') as f:
         f.write("\n".join(report))
+    print("="*60)
     print("Report saved to comparison_report.txt")
     print(f"Match Rate: {rate:.2f}%")
+    print("comparison_report.txt를 확인해주세요!")
+    print("="*60)
 
 if __name__ == "__main__":
     compare()

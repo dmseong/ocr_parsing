@@ -5,7 +5,7 @@ sample_01                 | vehicle_num     | 8713                 | 8713       
 sample_01                 | total_weight    | 12480                | 12480                | ✅
 sample_01                 | tare_weight     | 7470                 | 7470                 | ✅
 sample_01                 | net_weight      | 5010                 | 5010                 | ✅
-sample_01                 | company         | 곰욕환경폐기물              | 곰욕환경폐기물              | ✅
+sample_01                 | company         | 곰욕환경폐기물품종명랑05        | 곰욕환경폐기물              | ❌
 sample_01                 | product         | None                 | None                 | ✅
 sample_01                 | type            | None                 | None                 | ✅
 sample_01                 | ticket_id       | None                 | 0016                 | ❌
@@ -25,7 +25,7 @@ sample_03                 | vehicle_num     | 5405                 | 5405       
 sample_03                 | total_weight    | 14080                | 14080                | ✅
 sample_03                 | tare_weight     | 13950                | 13950                | ✅
 sample_03                 | net_weight      | 130                  | 130                  | ✅
-sample_03                 | company         | 공육을 unle 정우리사이클링(주)  | None                 | ❌
+sample_03                 | company         | None                 | None                 | ✅
 sample_03                 | product         | None                 | None                 | ✅
 sample_03                 | type            | 입고                   | 입고                   | ✅
 sample_03                 | ticket_id       | None                 | 5                    | ❌
@@ -46,7 +46,7 @@ sample_05_noisy           | total_weight    | 23480                | 23480      
 sample_05_noisy           | tare_weight     | 18250                | 18250                | ✅
 sample_05_noisy           | net_weight      | 5230                 | 5230                 | ✅
 sample_05_noisy           | company         | 대한리싸이클               | 대한리싸이클               | ✅
-sample_05_noisy           | product         | 고 철                  | 고철                   | ✅
+sample_05_noisy           | product         | 고철                   | 고철                   | ✅
 sample_05_noisy           | type            | 출고                   | 출고                   | ✅
 sample_05_noisy           | ticket_id       | None                 | None                 | ✅
 sample_05_noisy           | issuer          | (주)한국자원              | (주)한국자원              | ✅
@@ -56,7 +56,7 @@ sample_06_noisy           | total_weight    | 31880                | 31880      
 sample_06_noisy           | tare_weight     | 22440                | 22440                | ✅
 sample_06_noisy           | net_weight      | 9440                 | 9440                 | ✅
 sample_06_noisy           | company         | 청정그린                 | 청정그린                 | ✅
-sample_06_noisy           | product         | 폐 지                  | 폐지                   | ✅
+sample_06_noisy           | product         | 폐지                   | 폐지                   | ✅
 sample_06_noisy           | type            | 입고                   | 입고                   | ✅
 sample_06_noisy           | ticket_id       | 023487               | 023487               | ✅
 sample_06_noisy           | issuer          | 그린환경(주)              | 그린환경(주)              | ✅
@@ -75,11 +75,11 @@ sample_08_english         | vehicle_num     | AB-1234              | AB-1234    
 sample_08_english         | total_weight    | 25400                | 25400                | ✅
 sample_08_english         | tare_weight     | 12200                | 12200                | ✅
 sample_08_english         | net_weight      | 13200                | 13200                | ✅
-sample_08_english         | company         | Supplier : Global Resources Inc. | None                 | ❌
+sample_08_english         | company         | None                 | None                 | ✅
 sample_08_english         | product         | None                 | None                 | ✅
 sample_08_english         | type            | None                 | None                 | ✅
 sample_08_english         | ticket_id       | None                 | None                 | ✅
-sample_08_english         | issuer          | None                 | Global Resources Inc. | ❌
+sample_08_english         | issuer          | Supplier : Global Resources Inc. | Global Resources Inc. | ✅
 sample_09_unit_confusion  | date            | 2025-12-25           | 2025-12-25           | ✅
 sample_09_unit_confusion  | vehicle_num     | 경기99바1234            | 경기99바1234            | ✅
 sample_09_unit_confusion  | total_weight    | 24500                | 24500                | ✅
@@ -106,9 +106,9 @@ sample_11                 | total_weight    | 25000                | 25000      
 sample_11                 | tare_weight     | 11500                | 11500                | ✅
 sample_11                 | net_weight      | 13500                | 13500                | ✅
 sample_11                 | company         | (주)태양건설              | (주)태양건설              | ✅
-sample_11                 | product         | 혼 합 폐 기 물            | 혼합폐기물                | ✅
+sample_11                 | product         | 혼합폐기물                | 혼합폐기물                | ✅
 sample_11                 | type            | None                 | None                 | ✅
 sample_11                 | ticket_id       | 26-0206-003          | 26-0206-003          | ✅
 sample_11                 | issuer          | None                 | None                 | ✅
 -----------------------------------------------------------------------------------------------
-Total Match Rate: 104/110 (94.55%)
+Total Match Rate: 106/110 (96.36%)

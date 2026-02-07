@@ -81,9 +81,7 @@ class SmartFieldExtractor:
              result['issuer'] = val
              result['company'] = None
 
-        # [Fix] Company 추출 실패 시 Issuer를 Company로 대체 (Sample 10, 04 대응)
-        if not result['company'] and result['issuer']:
-             result['company'] = result['issuer']
+
         
         # 중복 체크 (Company == Issuer)
         if result['company'] and result['issuer']:

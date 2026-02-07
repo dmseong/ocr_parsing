@@ -470,7 +470,7 @@ class HeuristicValueFinder:
         if match:
             val = match.group(2).strip()
             # 노이즈 제거: 전화, TEL 등 추가
-            stoppers = ['품면', '품명', '구분', '입고', '출고', '총중량', '실중량', '공차', '차량', '날짜', '보관용', '전화', 'TEL', 'FAX'] 
+            stoppers = ['품면', '품명', '품 명', '구분', '입고', '출고', '총중량', '실중량', '공차', '차량', '날짜', '보관용', '전화', 'TEL', 'FAX'] 
             for stopper in stoppers:
                 if stopper in val:
                     val = val.split(stopper)[0]
@@ -700,7 +700,7 @@ class HeuristicValueFinder:
     def extract_product(self, text: str) -> Optional[str]:
         """품명(Product) 추출"""
         # [Fix] 영문/숫자 혼용 허용 (플라스틱 PE 등), 제 품 추가, stopper 강화
-        pattern = r'(품\s*명|품\s*면|제\s*품\s*명|제\s*품)\s*[:;：]?\s*([가-힣A-Za-z0-9 ]+?)(?=\s*(?:\(|구분|입고|출고|날짜|차량|발행|총중량|실중량|공차중량|ID-NO)|[:：\n]|$)'
+        pattern = r'(품\s*명|품\s*면|제\s*품\s*명|제\s*품|품\s*목|품\s*\.+\s*목)\s*[:;：]?\s*([가-힣A-Za-z0-9 ]+?)(?=\s*(?:\(|구분|입고|출고|날짜|차량|발행|총중량|실중량|공차중량|ID-NO)|[:：\n]|$)'
         match = re.search(pattern, text)
         if match:
             val = match.group(2).strip()
@@ -708,6 +708,11 @@ class HeuristicValueFinder:
             stoppers = ['총중량', '실중량', '공차중량', '중량', '계량', '확인', '차중량', '표']
             val_clean = val.replace(" ", "")
             if any(s in val_clean for s in stoppers): return None
+            
+            # [Fix] 한글 사이 공백 제거 ("혼 합 폐 기 물" -> "혼합폐기물")
+            # 단, 영문 등 다른 문자 사이 공백은 유지 ("Plastic PE")
+            val = re.sub(r'(?<=[가-힣])\s+(?=[가-힣])', '', val)
+            
             if len(val) >= 1: return val
         return None
 

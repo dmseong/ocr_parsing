@@ -4,6 +4,15 @@
 
 ---
 
+## 0. 🧹 Preprocessing Layer (전처리 계층, Layer 0)
+
+모든 추출 로직이 실행되기 전, OCR 엔진의 원본 데이터(`WordBox`)를 정제하는 단계입니다.
+- **`extractors/preprocessor.py` (OCRPreprocessor)**:
+    - **Noise Reduction**: 무의미한 특수문자(예: `.` `~` 단독 출현)를 제거하여 공간 분석의 정확도를 높입니다.
+    - **Safe Global Normalization**: 문맥 없이도 확실한 오인식(예: `차 랑` -> `차량`)을 교정합니다.
+
+---
+
 ## 1. 🧶 Extractors (추출기 모듈)
 
 ### 기본 구조
@@ -40,6 +49,24 @@
 | `spatial_extractor.py` | `SpatialValueExtractor` | 텍스트의 의미가 아닌 **좌표(Coordinate)**를 기반으로 값을 찾는 핵심 모듈. 라벨의 우측/하단 영역을 분석합니다. |
 | `normalizer.py` | `AdvancedNoiseNormalizer` | OCR 오인식(오타, 노이즈, 특수문자)을 문맥에 맞게 교정합니다. (예: `O`->`0`, `즁량`->`중량`) |
 | `label_detector.py` | `SmartLabelDetector` | Fuzzy Matching(Levenshtein Distance)을 사용하여 오타가 포함된 라벨 키워드를 찾아냅니다. |
+
+---
+
+### 5. 주요 필드별 상세 로직 (Field Specific Logic)
+
+`field_extractors.py`에 구현된 각 필드의 특화 로직입니다.
+
+#### (1) ProductExtractor (품명)
+- **Context-Aware Splitting**: "국판구분출"과 같이 제품명 바로 뒤에 다음 필드 라벨(구분, 입고, 수량 등)이 붙어있는 경우, 이를 감지하여 분리합니다.
+    - 정규식 `구\s*분` 등을 사용하여 공백이 불규칙해도 "구분"의 시작 위치를 찾아 그 앞까지만 제품명으로 취합니다.
+- **Whitespace Normalization**: "혼 합 폐 기 물"과 같이 OCR 과정에서 자모가 분리되거나 과도한 공백이 들어간 경우, 한글 사이의 공백을 제거하여 정규화합니다. (영/숫자 혼용은 유지)
+
+#### (2) CompanyExtractor (상호)
+- **Label Noise Filtering**: 추출된 값이 "품명", "제품", "날짜" 등 라벨 키워드와 일치하면 노이즈로 간주하여 필터링합니다. (`_is_label_noise`)
+- **Trailing Label Cleanup**: "고요환경품명"과 같이 회사명 뒤에 라벨이 붙어 추출된 경우, 뒷부분의 라벨만 깔끔하게 제거합니다. (`_clean_trailing_label`)
+
+#### (3) VehicleExtractor (차량번호)
+- **Prefix Removal**: "차량번호 12가3456" 또는 "상80구..."와 같이 숫자 앞에 붙은 불필요한 텍스트(상호의 일부, '차량' 등)를 정규식으로 제거하여 순수 번호판 정보만 추출합니다.
 
 ---
 

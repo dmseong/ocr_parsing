@@ -103,6 +103,13 @@ python test/compare_answer.py
 - 모든 계량표에는 최소한 하나 이상의 일관된 중량 흐름이 존재한다고 가정합니다.
 - OCR 데이터는 `WordBox` 단위의 좌표 정보(boundingBox)를 포함하고 있다고 가정하며, 없을 경우 텍스트 기반 휴리스틱 엔진으로 자동 전환됩니다.
 
+### 4. 고급 필드 추출 전략
+- **Product Extraction**:
+    - **Context-Aware Splitting**: "국판구분출"과 같이 제품명과 다음 필드 라벨이 붙어있는 경우, 문맥(Next Label)을 파악하여 자동으로 분리합니다.
+    - **Whitespace Normalization**: "혼 합 폐 기 물"과 같이 과도한 공백이 포함된 한글 텍스트를 정규화합니다.
+- **Company Extraction**:
+    - **Label Noise Filtering**: "품명", "제품" 등의 라벨이 회사명으로 오인식되는 것을 방지하기 위한 강력한 필터링 로직이 적용되었습니다.
+
 
 ---
 
@@ -126,6 +133,10 @@ graph TD
     
     subgraph UnifiedParser [OCR Parsing Engine]
         direction TB
+        
+        %% === Preprocessing Layer ===
+        Preprocessor[OCR Preprocessor]:::mainFlow
+        
         CheckBBox{"Has BoundingBox?"}:::mainFlow
         
         %% === Main Flow (Smart Extraction) ===
@@ -173,7 +184,8 @@ graph TD
     end
 
     %% 연결 관계
-    Start --> CheckBBox
+    Start --> Preprocessor
+    Preprocessor --> CheckBBox
     
     CheckBBox -- Yes --> Layout
     Layout --> Independent

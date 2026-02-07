@@ -11,6 +11,9 @@ from extractors.common import (
     get_empty_result, extract_word_boxes, analyze_layout
 )
 
+# [New] Preprocessing Layer
+from extractors.preprocessor import OCRPreprocessor
+
 # 새 모듈 import
 try:
     from extractors import (
@@ -57,7 +60,7 @@ class UnifiedOCRParser:
         """
         # 공통 컴포넌트
         self.normalizer = AdvancedNoiseNormalizer()
-        # self.weight_engine은 SmartFieldExtractor 내부에 위임되었으므로 제거
+        self.preprocessor = OCRPreprocessor()  # [New] 전처리 레이어
         
         # 스마트 추출기 (선택적)
         self.use_smart = use_smart_extractor and HAS_SMART_EXTRACTORS
@@ -125,6 +128,11 @@ class UnifiedOCRParser:
         else:
             # 2. 전처리 및 레이아웃 분석
             word_boxes = extract_word_boxes(json_data)
+            
+            # [New] Preprocessing Layer (Layer 0)
+            if self.preprocessor:
+                word_boxes = self.preprocessor.run(word_boxes)
+                
             if not word_boxes:
                 result = self._empty_result()
             else:
