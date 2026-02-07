@@ -2,12 +2,19 @@
 
 본 프로젝트는 계근지/영수증 OCR 데이터를 분석하여 정형화된 데이터로 추출하는 **하이브리드 파싱 엔진**입니다. 단순 텍스트 매칭을 넘어 공간 분석, 산술 검증, 그리고 자연어 처리를 결합하여 높은 정확도를 제공합니다.
 
+
+---
+
+## 🌐 Live Demo
+별도의 설치 없이 웹에서 바로 테스트해볼 수 있습니다.  
+👉 **[OCR Parsing Dashboard 실행하기](https://ocrparsing.streamlit.app/)**
+
 ---
 
 ## 🚀 실행 방법 (Local Reproduction)
 
 ### 1. 환경 구축
-Python 3.12의 환경에서 다음 명령어를 실행하여 필수 라이브러리를 설치합니다.
+Python 3.11+의 환경에서 다음 명령어를 실행하여 필수 라이브러리를 설치합니다.
 
 ```bash
 # 의존성 패키지 설치
@@ -40,7 +47,7 @@ python test/compare_answer.py
 
 ## 🛠️ 의존성 및 환경
 
-- **Core**: Python 3.12.5
+- **Core**: Python 3.11+
 - **UI & Visualization**: `streamlit` (대시보드 운영)
 - **Data Processing**: `pandas` (결합 및 통계)
 - **NLP & Fuzzy Matching**: 
