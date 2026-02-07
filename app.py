@@ -6,7 +6,6 @@ import os
 
 # 통합 파서 (UnifiedOCRParser)
 from parser import UnifiedOCRParser as OCRParser
-PARSER_VERSION = "integrated_v6"
 
 from boundingBoxSet import reconstruct_layout_from_data
 
@@ -21,7 +20,6 @@ st.set_page_config(
 st.title("📄 Hybrid OCR Parser Dashboard")
 st.markdown(f"""
 OCR JSON 데이터를 업로드하면 **파싱된 결과**를 확인하고, **직접 수정**할 수 있습니다.  
-`Parser: {PARSER_VERSION}`
 """)
 
 # 사이드바: 파일 업로드 및 설정
