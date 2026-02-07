@@ -71,7 +71,7 @@ python test/compare_answer.py
 
 ## 🧩 시스템 구조 (System Architecture)
 
-`UnifiedOCRParser` 내부의 추출기(Extractor) 상호 의존성 및 데이터 흐름도입니다.
+**OCR 파싱 엔진(OCR Parsing Engine)** 내부의 추출기(Extractor) 상호 의존성 및 데이터 흐름도입니다.
 
 ```mermaid
 graph TD
@@ -87,7 +87,7 @@ graph TD
     Start([OCR JSON Data]):::input
     ParsedResult([Structured Result]):::output
     
-    subgraph UnifiedParser [UnifiedOCRParser]
+    subgraph UnifiedParser [OCR Parsing Engine]
         direction TB
         CheckBBox{"Has BoundingBox?"}:::mainFlow
         
@@ -170,7 +170,7 @@ graph TD
 ## 📂 프로젝트 구조 (Directory Structure)
 
 ```text
-ocr_pareco
+ocr_parsing
 ├─ docs/                  # 프로젝트 문서
 │
 ├─ extractors/            # 추출기 핵심 모듈
@@ -190,7 +190,7 @@ ocr_pareco
 ├─ test/                  # 정확도 테스트 스크립트
 │
 ├─ app.py                 # 웹 대시보드 (Streamlit)
-├─ parser.py              # 파싱 엔트리포인트
+├─ parser.py              # OCR 파싱 엔진의 엔트리포인트 (Main Parser Class)
 ├─ confidence_scorer.py   # 신뢰도 점수 계산
 ├─ requirements.txt       # 의존성 패키지
 └─ comparison_report.txt  # 테스트 결과 리포트

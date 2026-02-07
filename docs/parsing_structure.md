@@ -1,6 +1,6 @@
 # OCR Parsing System Structure
 
-현재 프로젝트의 `UnifiedOCRParser` 내부 동작 흐름과 각 추출기(Extractor) 간의 의존성 구조도입니다.
+현재 프로젝트의 **OCR 파싱 엔진(OCR Parsing Engine)** 내부 동작 흐름과 각 추출기(Extractor) 간의 의존성 구조도입니다.
 
 ```mermaid
 graph TD
@@ -16,7 +16,7 @@ graph TD
     Start([OCR JSON Data]):::input
     ParsedResult([Structured Result]):::output
     
-    subgraph UnifiedParser [UnifiedOCRParser]
+    subgraph UnifiedParser [OCR Parsing Engine]
         direction TB
         CheckBBox{"Has BoundingBox?"}:::mainFlow
         
