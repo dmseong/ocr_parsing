@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 # 타이틀 및 설명
-st.title("📄 Hybrid OCR Parser Dashboard")
+st.title("📄 OCR Parser Dashboard")
 st.markdown(f"""
 OCR JSON 데이터를 업로드하면 **파싱된 결과**를 확인하고, **직접 수정**할 수 있습니다.  
 """)
