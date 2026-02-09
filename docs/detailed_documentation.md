@@ -1,6 +1,6 @@
 # 📘 상세 분석 보고서 (Detailed Documentation)
 
-본 문서는 `UnifiedOCRParser` 시스템의 핵심 기술 요소인 **Extractors**, **Confidence Score**, **BoundingBox**의 동작 원리와 구현 디테일을 다룹니다.
+본 문서는 `ocr_parsing` 시스템의 핵심 기술 요소인 **Extractors**, **Confidence Score**, **BoundingBox**의 동작 원리와 구현 디테일을 다룹니다.
 
 ---
 
