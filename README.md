@@ -1,3 +1,4 @@
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white">
 # 📄 OCR Parsing Engine
 
 본 프로젝트는 계근지/영수증 OCR 데이터를 분석하여 정형화된 데이터로 추출하는 **OCR 파싱 엔진**입니다. 단순 텍스트 매칭을 넘어 공간 분석, 산술 검증, 그리고 자연어 처리를 결합하여 높은 정확도를 제공합니다.
