@@ -142,10 +142,11 @@ graph TD
     subgraph UnifiedParser [OCR Parsing Engine]
         direction TB
         
-        %% === Preprocessing Layer ===
-        Preprocessor[OCR Preprocessor]:::mainFlow
-        
+        %% === Decision Point ===
         CheckBBox{"Has BoundingBox?"}:::mainFlow
+        
+        %% === Preprocessing Layer (Inside Main Flow) ===
+        Preprocessor[OCR Preprocessor]:::mainFlow
         
         %% === Main Flow (Smart Extraction) ===
         subgraph SmartPipeline [Main Pipeline]
@@ -157,7 +158,6 @@ graph TD
             subgraph Extractors [Field Extractors]
                 direction TB
                 
-                %% 세로 배치 강제
                 subgraph Independent [Independent Extractors]
                     direction LR
                     W_Ext[Weight Extractor]:::extractor
@@ -191,11 +191,12 @@ graph TD
         Scorer[Confidence Scorer]:::mainFlow
     end
 
-    %% 연결 관계
-    Start --> Preprocessor
-    Preprocessor --> CheckBBox
+    %% 연결 관계 (수정됨)
+    Start --> CheckBBox
     
-    CheckBBox -- Yes --> Layout
+    CheckBBox -- Yes --> Preprocessor
+    Preprocessor --> Layout
+    
     Layout --> Independent
     Independent --> SpatialUsers
     SpatialUsers --> Dependent
