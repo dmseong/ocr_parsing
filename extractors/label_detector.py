@@ -1,5 +1,5 @@
 import re
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 from difflib import SequenceMatcher
 
 from .common import LabelMatch, WordBox, HAS_SPACY, spacy, Matcher, HAS_RAPIDFUZZ, fuzz, process
@@ -92,7 +92,23 @@ class SmartLabelDetector:
             ))
         
         return results
-    
+
+    def get_entities(self, text: str, labels: Any = None) -> List[str]:
+        """spaCy NER을 사용하여 특정 엔티티 추출 (단일 라벨 또는 라벨 리스트 처리)"""
+        if not HAS_SPACY or not self.nlp:
+            return []
+        
+        if labels is None:
+            labels = PATTERNS['ENTITY']['ORGANIZATION']
+        
+        # 단일 문자열인 경우 리스트로 변환
+        if isinstance(labels, str):
+            labels = [labels]
+            
+        doc = self.nlp(text)
+        # 지정된 태그들 중 하나라도 일치하는 엔티티 반환
+        return [ent.text for ent in doc.ents if ent.label_ in labels]
+
     def _detect_with_fuzzy(self, text: str) -> List[LabelMatch]:
         """Fuzzy Matching으로 탐지 (Fallback)"""
         results = []

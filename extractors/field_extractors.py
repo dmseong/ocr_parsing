@@ -109,6 +109,16 @@ class CompanyExtractor(BaseExtractor):
              if self._validate_heuristic_location(val, word_boxes):
                  if not self._is_label_noise(val):
                      return self._clean_trailing_label(val)
+        
+        # [New] 전략 4: spaCy NER (조직명 인식)
+        # 이전 전략들이 모두 실패했을 때 최후의 수단으로 문맥 분석 수행
+        entities = self.label_detector.get_entities(full_text, PATTERNS['ENTITY']['ORGANIZATION'])
+        if entities:
+            # 텍스트가 너무 짧거나 노이즈가 아닌 것 중 첫 번째
+            for ent in entities:
+                if len(ent) >= 2 and not self._is_label_noise(ent):
+                    # 회사명 정규화 (공간 검증은 생략 - NER 자체가 문맥을 보기 때문)
+                    return self._clean_trailing_label(ent)
              
         return None
 
@@ -262,6 +272,17 @@ class IssuerExtractor(BaseExtractor):
                 if norm_company == norm_issuer:
                     return None
             return issuer_val
+        
+        # [New] 전략 3: spaCy NER (발행처 보완)
+        entities = self.label_detector.get_entities(full_text, PATTERNS['ENTITY']['ORGANIZATION'])
+        if entities:
+            last_company_norm = last_company.replace(" ", "") if last_company else ""
+            for ent in entities:
+                # 회사명과 다르고 의미 있는 길이인 경우
+                if len(ent) >= 2 and ent.replace(" ", "") != last_company_norm:
+                    # 하단 영역에 위치하는지 가볍게 체크 (선택 사항)
+                    return ent
+
         return None
         
     def set_company_for_validation(self, company: Optional[str]):

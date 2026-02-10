@@ -142,6 +142,11 @@ PATTERNS = {
         'LABEL': r'(구\s*분|구\s*문)\s*[:;：]?\s*([가-힣 ]+)',
         'IN': r'입\s*고',
         'OUT': r'출\s*고'
+    },
+    'ENTITY': {
+        'ORGANIZATION': ['ORG', 'OG', 'PS'],  # 조직, 기관, 인물(개인사업자)
+        'LOCATION': ['GPE', 'LOC', 'LC'],     # 지명, 장소
+        'DATE': ['DATE', 'DT', 'TI']           # 날짜, 시간
     }
 }
 
