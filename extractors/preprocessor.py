@@ -3,6 +3,7 @@ import unicodedata
 from typing import List
 from extractors.common import WordBox
 from extractors.normalizer import AdvancedNoiseNormalizer
+from .config import KEYWORDS
 
 class OCRPreprocessor:
     """

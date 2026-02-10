@@ -254,7 +254,14 @@ class IssuerExtractor(BaseExtractor):
                 candidates.append((score, word))
         candidates.sort(key=lambda x: x[0], reverse=True)
         if candidates:
-            return self._expand_issuer_name(candidates[0][1], word_boxes)
+            issuer_val = self._expand_issuer_name(candidates[0][1], word_boxes)
+            # 전략 2(공간 기반)에서도 회사명과 중복되는지 검증
+            if last_company:
+                norm_company = last_company.replace(" ", "")
+                norm_issuer = issuer_val.replace(" ", "")
+                if norm_company == norm_issuer:
+                    return None
+            return issuer_val
         return None
         
     def set_company_for_validation(self, company: Optional[str]):
