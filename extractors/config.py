@@ -81,8 +81,9 @@ CONSTANTS = {
 
 KEYWORDS = {
     'ISSUER_CORP': ["(주)", "주식회사", "Co.", "Inc.", "Corp.", "ENG"],
-    'ISSUER_TYPE': ["리사이클", "환경", "자원", "산업", "개발", "펄프", "제지"],
+    'ISSUER_TYPE': ["리사이클", "환경", "자원", "산업", "개발", "펄프", "제지", "장원"],
     'ISSUER_HEADER_SKIP': ["계량", "증명", "확인서", "전표", "발행"],
+    'GLOBAL_NOISE': ["공육을", "unle"],
     'PHONE_LABELS': ["TEL", "Tel", "전화", "연락처", "H.P", "HP", "Fax", "FAX"],
 }
 

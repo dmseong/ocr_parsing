@@ -84,8 +84,8 @@ class OCRPreprocessor:
         
         # 5. 특정 노이즈 키워드 제거
         # 이런 무의미한 단어는 전처리 단계에서 날리는 것이 안전함
-        NOISE_KEYWORDS = ['공육을', 'unle']
-        if text in NOISE_KEYWORDS:
-            return ""
+        for noise in KEYWORDS.get('GLOBAL_NOISE', []):
+            if text == noise:
+                return ""
             
         return text

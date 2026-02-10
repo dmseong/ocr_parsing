@@ -85,7 +85,8 @@ class CompanyExtractor(BaseExtractor):
                         return refined
                     
                     # [Fix] Fallback: 공백 및 점 제거, 그리고 노이즈 키워드 직접 제거
-                    value = value.replace("공육을", "").replace("unle", "")
+                    for noise in KEYWORDS.get('GLOBAL_NOISE', []):
+                         value = value.replace(noise, "")
                     final_val = value.strip().replace(" ", "").replace("..", "").replace("...", "")
                     
                     if not self._is_label_noise(final_val): # 최종 값도 다시 확인
@@ -245,7 +246,6 @@ class IssuerExtractor(BaseExtractor):
             if cy >= bottom_threshold:
                 if any(k in text for k in KEYWORDS['ISSUER_CORP']): score += 50
                 if any(k in text for k in KEYWORDS['ISSUER_TYPE']): score += 30
-                if "장원" in text: score += 40
             elif cy <= top_threshold:
                 if any(k in text for k in KEYWORDS['ISSUER_CORP']): score += 50
                 if any(k in text for k in KEYWORDS['ISSUER_TYPE']): score += 40
