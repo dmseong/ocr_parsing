@@ -160,17 +160,17 @@ class HeuristicValueFinder:
         mon_match = re.search(PATTERNS['DATE'][0], text_norm)
         if mon_match:
             y, m_str, d = mon_match.groups()
-            m = month_map.get(m_str.capitalize())
-            if m: return f"{y}-{m}-{d.zfill(2)}"
+            m = month_map.get(m_str.capitalize()) # 외국어 월 이름(Feb) 숫자로 변환
+            if m: return f"{y}-{m}-{d.zfill(2)}" 
         
         dot_match = re.search(PATTERNS['DATE'][1], text_norm)
         if dot_match:
             y, m, d = dot_match.groups()
-            if len(y) == 2: y = "20" + y
+            if len(y) == 2: y = "20" + y # 연도가 2자리면 20을 붙여 2026으로 확장
             return f"{y}-{m.zfill(2)}-{d.zfill(2)}"
         
         # Noisy Date Pattern (e.g., 2026, 02. 01, 2O26-O2-O3)
-        # 1. 먼저 숫자 오인식 보정
+        # 1. 숫자 오인식 보정
         clean_text = self._normalize_ocr_digits(text_norm)
         
         # 2. 보정된 텍스트에서 검색
